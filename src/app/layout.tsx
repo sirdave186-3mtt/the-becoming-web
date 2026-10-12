@@ -1,10 +1,16 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from 'next';
 import Navbar from "@/components/Navbar";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "The Becoming | With Dr. Immanuelson Sam",
   description: "A community for people committed to personal growth, courageous leadership, and meaningful action.",
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({
