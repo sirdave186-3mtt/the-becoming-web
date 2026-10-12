@@ -3,7 +3,6 @@ import Link from "next/link";
 import {
     Sparkles,
     ExternalLink,
-    ArrowRight,
     CheckCircle2
 } from "lucide-react";
 
@@ -61,15 +60,15 @@ export default function FounderPage() {
                     </h1>
 
                     <p className="text-sm font-semibold tracking-wider text-brand-gold uppercase">
-                        Management Consultant • Leadership Coach • Global Speaker[cite: 27]
+                        Management Consultant • Leadership Coach • Global Speaker
                     </p>
 
                     <p className="text-base text-brand-muted leading-relaxed">
-                        Dr. Immanuelson Sam is the Managing Partner at <strong className="text-brand-white">Goldenmuv Premium Consulting Limited (GMPC)</strong>, driving bold strategic transformation across Nigeria and West Africa[cite: 29]. With over 15 years of battle-tested experience in commercial banking, public sector reform, and human capital development, he leads multidisciplinary teams to unlock sustainable growth[cite: 29].
+                        Dr. Immanuelson Sam is the Managing Partner at <strong className="text-brand-white">Goldenmuv Premium Consulting Limited (GMPC)</strong>, driving bold strategic transformation across Nigeria and West Africa. With over 15 years of battle-tested experience in commercial banking, public sector reform, and human capital development, he leads multidisciplinary teams to unlock sustainable growth.
                     </p>
 
                     <p className="text-sm text-brand-muted leading-relaxed">
-                        His expertise spans leadership strategy, culture transformation, organizational design, and risk governance—guiding CEOs, ministers, and impact-driven founders[cite: 30]. As the visionary convener of <strong className="text-brand-white">The Becoming</strong>, he stewards a borderless mentorship community spanning 7 African nations, guiding intentional people to bridge the gap between intention and action.
+                        His expertise spans leadership strategy, culture transformation, organizational design, and risk governance—guiding CEOs, ministers, and impact-driven founders. As the visionary convener of <strong className="text-brand-white">The Becoming</strong>, he stewards a borderless mentorship community spanning 7 African nations, guiding intentional people to bridge the gap between intention and action.
                     </p>
 
                     <div className="flex flex-wrap gap-3 pt-2">
@@ -96,7 +95,7 @@ export default function FounderPage() {
                     <div className="relative rounded-3xl bg-gradient-to-br from-brand-slate/60 to-brand-navy border border-white/10 p-5 space-y-5 shadow-2xl">
                         <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden border border-white/10 bg-brand-navy">
                             <Image
-                                src="/images/immanuelson-sam.jfif"
+                                src="/images/immanuelson-sam.jpg"
                                 alt="Dr. Immanuelson Sam"
                                 fill
                                 sizes="(max-width: 1024px) 100vw, 400px"
@@ -107,7 +106,7 @@ export default function FounderPage() {
                             <div className="absolute bottom-4 left-4 right-4 text-left">
                                 <span className="text-xs font-bold text-brand-gold uppercase tracking-wider block">Convener</span>
                                 <h3 className="text-lg font-bold text-brand-white">Dr. Immanuelson Sam</h3>
-                                <p className="text-[11px] text-brand-muted">Managing Partner, GMPC • YALI Fellow[cite: 29, 30, 41]</p>
+                                <p className="text-[11px] text-brand-muted">Managing Partner, GMPC • YALI Fellow</p>
                             </div>
                         </div>
 
@@ -138,19 +137,19 @@ export default function FounderPage() {
                 </div>
             </section>
 
-            {/* 3. Signature Keynotes with Speaking Stage Action Shot (.jfif) */}
+            {/* 3. Signature Keynotes with Speaking Stage Action Shot */}
             <section className="space-y-10">
                 <div className="text-center max-w-xl mx-auto space-y-2">
-                    <span className="text-xs font-bold tracking-widest text-brand-gold uppercase">Keynotes &amp; Consulting[cite: 31, 32]</span>
+                    <span className="text-xs font-bold tracking-widest text-brand-gold uppercase">Keynotes &amp; Consulting</span>
                     <h2 className="text-3xl sm:text-4xl font-extrabold text-brand-white">Signature Speaking Topics</h2>
-                    <p className="text-sm text-brand-muted">Tailored for corporate retreats, summits, governance councils, and leadership forums[cite: 31].</p>
+                    <p className="text-sm text-brand-muted">Tailored for corporate retreats, summits, governance councils, and leadership forums.</p>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                     {/* Action Image Column */}
                     <div className="lg:col-span-4 relative rounded-3xl overflow-hidden border border-white/10 bg-brand-navy aspect-[3/4] shadow-2xl group">
                         <Image
-                            src="/images/immanuelson-speaking.jfif"
+                            src="/images/immanuelson-speaking.jpg"
                             alt="Dr. Immanuelson Sam delivering keynote"
                             fill
                             sizes="(max-width: 1024px) 100vw, 380px"
@@ -201,7 +200,7 @@ export default function FounderPage() {
                     Book Dr. Immanuelson Sam
                 </h3>
                 <p className="text-xs sm:text-sm text-brand-muted max-w-xl mx-auto leading-relaxed">
-                    For keynotes, executive leadership retreats, strategic advisory, or one-on-one executive consultations, visit his official firm portal[cite: 31, 32, 33, 34].
+                    For keynotes, executive leadership retreats, strategic advisory, or one-on-one executive consultations, visit his official firm portal.
                 </p>
                 <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
                     <a
@@ -210,7 +209,7 @@ export default function FounderPage() {
                         rel="noopener noreferrer"
                         className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-brand-gold text-brand-navy font-bold px-8 py-3.5 rounded-full hover:brightness-110 transition text-xs shadow-lg shadow-brand-gold/20"
                     >
-                        <span>Visit www.goldenmuv.com[cite: 27, 30]</span>
+                        <span>Visit www.goldenmuv.com</span>
                         <ExternalLink className="w-4 h-4" />
                     </a>
                     <Link
