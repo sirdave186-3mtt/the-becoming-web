@@ -7,10 +7,7 @@ import {
     FileText
 } from 'lucide-react';
 
-export default async function Footer() {
-    'use cache';
-    const currentYear = new Date().getFullYear();
-
+export default function Footer() {
     return (
         <footer className="border-t border-white/10 bg-brand-navy/95 text-brand-muted mt-24">
             <div className="max-w-6xl mx-auto px-6 py-16 space-y-12">
@@ -179,7 +176,7 @@ export default async function Footer() {
 
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
                         <p>
-                            &copy; {currentYear} The Becoming with Dr. Immanuelson Sam (The Becomers Community). All rights reserved.
+                            &copy; 2026 The Becoming with Dr. Immanuelson Sam (The Becomers Community). All rights reserved.
                         </p>
                         <div className="flex items-center gap-4">
                             <Link href="/policies#privacy" className="hover:text-brand-gold transition">
