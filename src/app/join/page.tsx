@@ -1,215 +1,326 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Link from "next/link";
-import { ArrowRight, CheckCircle2, Send, ShieldCheck, Sparkles, Loader2 } from "lucide-react";
+import { Suspense, useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import { CheckCircle2, ArrowRight, Loader2, Sparkles, ShieldCheck } from 'lucide-react';
 
-const GROWTH_AREAS = [
-    "Personal Growth & Self-Awareness",
-    "Courageous Leadership",
-    "Mindset & Emotional Resilience",
-    "Communication & Clarity",
-    "Purpose & Direction",
-    "Character & Responsibility",
+const COUNTRIES = [
+    'Nigeria',
+    'Ghana',
+    'Kenya',
+    'Rwanda',
+    'South Africa',
+    'Liberia',
+    'Uganda',
+    'Zambia',
+    'Zimbabwe',
+    'Other',
 ];
 
-export default function JoinPage() {
-    const [fullName, setFullName] = useState("");
-    const [email, setEmail] = useState("");
-    const [country, setCountry] = useState("");
-    const [growthFocus, setGrowthFocus] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [submitted, setSubmitted] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
+const GROWTH_AREAS = [
+    'Personal Growth & Self-Discipline',
+    'Courageous & Servant Leadership',
+    'Career & Strategic Clarity',
+    'Mindset, Resilience & Character',
+    'Purpose & Impactful Living',
+];
+
+function JoinForm() {
+    const searchParams = useSearchParams();
+    const countryParam = searchParams.get('country');
+
+    const [fullName, setFullName] = useState('');
+    const [email, setEmail] = useState('');
+    const [country, setCountry] = useState('Nigeria');
+    const [customCountry, setCustomCountry] = useState('');
+    const [growthFocus, setGrowthFocus] = useState(GROWTH_AREAS[0]);
+    const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
+    const [optionalUpdates, setOptionalUpdates] = useState(false);
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [errorMsg, setErrorMsg] = useState('');
+
+    const customCountryRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        if (countryParam) {
+            if (countryParam.toLowerCase() === 'other') {
+                setCountry('Other');
+                setTimeout(() => customCountryRef.current?.focus(), 150);
+            } else {
+                const matched = COUNTRIES.find(
+                    (c) => c.toLowerCase() === countryParam.toLowerCase()
+                );
+                if (matched) {
+                    setCountry(matched);
+                } else {
+                    setCountry('Other');
+                    setCustomCountry(countryParam);
+                }
+            }
+        }
+    }, [countryParam]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
-        setErrorMessage("");
+        setErrorMsg('');
+
+        if (!agreedToPrivacy) {
+            setErrorMsg('Please confirm that you have read and acknowledged the Privacy Notice.');
+            return;
+        }
+
+        const finalCountry = country === 'Other' ? customCountry.trim() : country;
+        if (!finalCountry) {
+            setErrorMsg('Please specify your country of residence.');
+            return;
+        }
+
+        setIsSubmitting(true);
 
         try {
-            const res = await fetch("/api/onboard", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ fullName, email, country, growthFocus }),
+            const res = await fetch('/api/onboard', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    fullName,
+                    email,
+                    country: finalCountry,
+                    growthFocus,
+                    agreedToPrivacy,
+                    optionalUpdates,
+                }),
             });
 
             const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Failed to submit registration');
 
-            if (!res.ok) {
-                throw new Error(data.error || "Something went wrong.");
-            }
-
-            setSubmitted(true);
+            setIsSubmitted(true);
         } catch (err: any) {
-            setErrorMessage(err.message || "Failed to submit. Please try again.");
+            setErrorMsg(err.message || 'Something went wrong. Please try again.');
         } finally {
-            setLoading(false);
+            setIsSubmitting(false);
         }
     };
 
-    return (
-        <div className="max-w-4xl mx-auto px-6 py-16">
-            {!submitted ? (
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
-                    {/* Left Context Column */}
-                    <div className="md:col-span-5 space-y-6">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-gold/30 bg-brand-gold/10 text-brand-gold text-xs font-semibold">
-                            <Sparkles className="w-3.5 h-3.5" />
-                            <span>Take The Next Step</span>
-                        </div>
-
-                        <h1 className="text-3xl sm:text-4xl font-extrabold text-brand-white leading-tight">
-                            Begin Your Journey as a <span className="text-brand-gold">Becomer</span>.
-                        </h1>
-
-                        <p className="text-sm text-brand-muted leading-relaxed">
-                            Join intentional, growth-minded individuals across 7+ nations. Enter your details to access our weekly live sessions and private Telegram hub.
-                        </p>
-
-                        <div className="space-y-3 pt-2">
-                            <div className="flex items-center gap-2.5 text-xs text-brand-white">
-                                <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
-                                <span>Sunday sessions hosted live on Google Meet</span>
-                            </div>
-                            <div className="flex items-center gap-2.5 text-xs text-brand-white">
-                                <CheckCircle2 className="w-4 h-4 text-brand-gold shrink-0" />
-                                <span>Weekly prompt & challenge delivered on Telegram</span>
-                            </div>
-                            <div className="flex items-center gap-2.5 text-xs text-brand-white">
-                                <ShieldCheck className="w-4 h-4 text-brand-gold shrink-0" />
-                                <span>100% Free community membership</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Right Form Card */}
-                    <div className="md:col-span-7 bg-brand-slate/40 border border-white/10 p-8 rounded-3xl backdrop-blur-md">
-                        <form onSubmit={handleSubmit} className="space-y-5">
-                            {errorMessage && (
-                                <div className="p-3 text-xs rounded-xl bg-red-500/10 border border-red-500/30 text-red-400">
-                                    {errorMessage}
-                                </div>
-                            )}
-
-                            <div>
-                                <label className="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">
-                                    Full Name *
-                                </label>
-                                <input
-                                    type="text"
-                                    required
-                                    placeholder="e.g. David Okafor"
-                                    value={fullName}
-                                    onChange={(e) => setFullName(e.target.value)}
-                                    className="w-full bg-brand-navy border border-white/10 rounded-xl px-4 py-3 text-sm text-brand-white placeholder:text-brand-muted/50 focus:outline-none focus:border-brand-gold transition"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">
-                                    Email Address *
-                                </label>
-                                <input
-                                    type="email"
-                                    required
-                                    placeholder="name@example.com"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full bg-brand-navy border border-white/10 rounded-xl px-4 py-3 text-sm text-brand-white placeholder:text-brand-muted/50 focus:outline-none focus:border-brand-gold transition"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">
-                                    Country *
-                                </label>
-                                <input
-                                    type="text"
-                                    required
-                                    placeholder="e.g. Nigeria, Kenya, South Africa"
-                                    value={country}
-                                    onChange={(e) => setCountry(e.target.value)}
-                                    className="w-full bg-brand-navy border border-white/10 rounded-xl px-4 py-3 text-sm text-brand-white placeholder:text-brand-muted/50 focus:outline-none focus:border-brand-gold transition"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">
-                                    Primary Area of Growth (Optional)
-                                </label>
-                                <select
-                                    value={growthFocus}
-                                    onChange={(e) => setGrowthFocus(e.target.value)}
-                                    className="w-full bg-brand-navy border border-white/10 rounded-xl px-4 py-3 text-sm text-brand-white focus:outline-none focus:border-brand-gold transition"
-                                >
-                                    <option value="">Select an area of focus</option>
-                                    {GROWTH_AREAS.map((area) => (
-                                        <option key={area} value={area} className="bg-brand-navy text-brand-white">
-                                            {area}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="w-full mt-4 flex items-center justify-center gap-2 bg-brand-gold text-brand-navy font-bold py-3.5 rounded-xl hover:brightness-110 active:scale-[0.99] transition disabled:opacity-50 shadow-md shadow-brand-gold/10"
-                            >
-                                {loading ? (
-                                    <>
-                                        <Loader2 className="w-4 h-4 animate-spin" />
-                                        <span>Securing Your Spot...</span>
-                                    </>
-                                ) : (
-                                    <>
-                                        <span>Complete Onboarding</span>
-                                        <ArrowRight className="w-4 h-4" />
-                                    </>
-                                )}
-                            </button>
-                        </form>
-                    </div>
+    if (isSubmitted) {
+        return (
+            <div className="rounded-3xl border border-brand-gold/30 bg-brand-slate/40 p-8 sm:p-12 text-center space-y-6 max-w-lg mx-auto shadow-2xl animate-in fade-in zoom-in-95 duration-300">
+                <div className="w-16 h-16 rounded-full bg-brand-gold/15 text-brand-gold flex items-center justify-center mx-auto border border-brand-gold/30">
+                    <CheckCircle2 className="w-8 h-8" />
                 </div>
-            ) : (
-                /* Instant Success Screen */
-                <div className="max-w-xl mx-auto text-center space-y-6 p-8 sm:p-10 rounded-3xl bg-brand-slate/40 border border-brand-gold/30">
-                    <div className="w-16 h-16 rounded-full bg-brand-gold/10 text-brand-gold flex items-center justify-center mx-auto">
-                        <CheckCircle2 className="w-8 h-8" />
-                    </div>
+                <div className="space-y-2">
+                    <h2 className="text-2xl sm:text-3xl font-extrabold text-brand-white">
+                        Welcome to The Becoming
+                    </h2>
+                    <p className="text-sm text-brand-muted leading-relaxed">
+                        You are now registered, <strong className="text-brand-white">{fullName}</strong>. A confirmation email with the session guidelines and link has been sent to <span className="text-brand-gold">{email}</span>.
+                    </p>
+                </div>
+                <div className="p-4 rounded-2xl bg-brand-navy border border-white/5 space-y-2">
+                    <span className="text-xs font-bold text-brand-gold uppercase tracking-wider block">
+                        Next Live Gathering
+                    </span>
+                    <p className="text-xs text-brand-white">
+                        Every Sunday • 6:00 PM (West Africa Time) Online
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
-                    <div className="space-y-2">
-                        <h2 className="text-3xl font-extrabold text-brand-white">Welcome to The Becoming!</h2>
-                        <p className="text-sm text-brand-muted">
-                            Your details have been registered. An onboarding email is on its way to <strong className="text-brand-white">{email}</strong>.
-                        </p>
-                    </div>
-
-                    <div className="p-5 rounded-2xl bg-brand-navy border border-white/10 text-left space-y-3">
-                        <span className="text-xs font-bold text-brand-gold uppercase tracking-wider">Final Step</span>
-                        <h4 className="text-sm font-semibold text-brand-white">Join the Telegram Community Channel</h4>
-                        <p className="text-xs text-brand-muted leading-relaxed">
-                            This is where weekly prompts, challenges, and Google Meet session links are posted live.
-                        </p>
-                        <a
-                            href="https://t.me/thebecomingwithsam"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full inline-flex items-center justify-center gap-2 bg-brand-gold text-brand-navy font-bold py-3 rounded-xl hover:brightness-110 transition mt-2 text-sm"
-                        >
-                            <Send className="w-4 h-4" />
-                            <span>Enter Telegram Channel Now</span>
-                        </a>
-                    </div>
-
-                    <div className="pt-2">
-                        <Link href="/" className="text-xs font-medium text-brand-muted hover:text-brand-white transition">
-                            ← Return to Homepage
-                        </Link>
-                    </div>
+    return (
+        <form onSubmit={handleSubmit} className="space-y-6 max-w-lg mx-auto text-left">
+            {errorMsg && (
+                <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-200 text-xs">
+                    {errorMsg}
                 </div>
             )}
+
+            <div className="space-y-2">
+                <label className="text-xs font-bold text-brand-white uppercase tracking-wider block">
+                    Full Name
+                </label>
+                <input
+                    type="text"
+                    required
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="e.g. Oluwaseun Adeleke"
+                    className="w-full px-4 py-3.5 rounded-xl bg-brand-navy border border-white/10 text-brand-white placeholder:text-brand-muted/50 focus:border-brand-gold focus:outline-none transition text-sm"
+                />
+            </div>
+
+            <div className="space-y-2">
+                <label className="text-xs font-bold text-brand-white uppercase tracking-wider block">
+                    Email Address
+                </label>
+                <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="e.g. seun@example.com"
+                    className="w-full px-4 py-3.5 rounded-xl bg-brand-navy border border-white/10 text-brand-white placeholder:text-brand-muted/50 focus:border-brand-gold focus:outline-none transition text-sm"
+                />
+            </div>
+
+            <div className="space-y-2">
+                <label className="text-xs font-bold text-brand-white uppercase tracking-wider block">
+                    Country of Residence
+                </label>
+                <select
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    className="w-full px-4 py-3.5 rounded-xl bg-brand-navy border border-white/10 text-brand-white focus:border-brand-gold focus:outline-none transition text-sm"
+                >
+                    {COUNTRIES.map((c) => (
+                        <option key={c} value={c} className="bg-brand-navy text-brand-white">
+                            {c}
+                        </option>
+                    ))}
+                </select>
+            </div>
+
+            {country === 'Other' && (
+                <div className="space-y-2 animate-in fade-in duration-200">
+                    <label className="text-xs font-bold text-brand-gold uppercase tracking-wider block">
+                        Enter Your Country
+                    </label>
+                    <input
+                        ref={customCountryRef}
+                        type="text"
+                        required
+                        value={customCountry}
+                        onChange={(e) => setCustomCountry(e.target.value)}
+                        placeholder="Type your country..."
+                        className="w-full px-4 py-3.5 rounded-xl bg-brand-navy border border-brand-gold/50 text-brand-white placeholder:text-brand-muted/50 focus:border-brand-gold focus:outline-none transition text-sm"
+                    />
+                </div>
+            )}
+
+            <div className="space-y-2">
+                <label className="text-xs font-bold text-brand-white uppercase tracking-wider block">
+                    Primary Area of Growth
+                </label>
+                <select
+                    value={growthFocus}
+                    onChange={(e) => setGrowthFocus(e.target.value)}
+                    className="w-full px-4 py-3.5 rounded-xl bg-brand-navy border border-white/10 text-brand-white focus:border-brand-gold focus:outline-none transition text-sm"
+                >
+                    {GROWTH_AREAS.map((area) => (
+                        <option key={area} value={area} className="bg-brand-navy text-brand-white">
+                            {area}
+                        </option>
+                    ))}
+                </select>
+            </div>
+
+            {/* Privacy Copy & Consent Checkboxes */}
+            <div className="p-4 rounded-2xl bg-brand-navy/80 border border-white/10 space-y-3.5">
+                <div className="flex items-start gap-2.5">
+                    <ShieldCheck className="w-4 h-4 text-brand-gold shrink-0 mt-0.5" />
+                    <p className="text-[11px] text-brand-muted leading-relaxed">
+                        We&apos;ll use the information you provide to process your request to join The Becoming, support onboarding, and send essential community and Sunday Session updates. We will handle your information in line with our{' '}
+                        <Link href="/policies#privacy" className="text-brand-gold underline hover:brightness-110">
+                            Privacy Notice
+                        </Link>{' '}
+                        and may use service providers to operate the website and community. Please do not submit sensitive personal information through this form.
+                    </p>
+                </div>
+
+                <div className="space-y-2.5 pt-1 border-t border-white/5">
+                    {/* Required Privacy & Standards Acknowledgement */}
+                    <label className="flex items-start gap-2.5 cursor-pointer">
+                        <input
+                            type="checkbox"
+                            required
+                            checked={agreedToPrivacy}
+                            onChange={(e) => setAgreedToPrivacy(e.target.checked)}
+                            className="mt-0.5 accent-brand-gold rounded cursor-pointer"
+                        />
+                        <span className="text-[11px] text-brand-white leading-tight">
+                            I have read the{' '}
+                            <Link href="/policies#privacy" className="text-brand-gold underline">
+                                Privacy Notice
+                            </Link>{' '}
+                            and{' '}
+                            <Link href="/policies#standards" className="text-brand-gold underline">
+                                Community Standards
+                            </Link>{' '}
+                            and understand how The Becoming may use my personal information to administer my membership request. <span className="text-brand-gold">*</span>
+                        </span>
+                    </label>
+
+                    {/* Optional Updates Checkbox */}
+                    <label className="flex items-start gap-2.5 cursor-pointer">
+                        <input
+                            type="checkbox"
+                            checked={optionalUpdates}
+                            onChange={(e) => setOptionalUpdates(e.target.checked)}
+                            className="mt-0.5 accent-brand-gold rounded cursor-pointer"
+                        />
+                        <span className="text-[11px] text-brand-muted leading-tight">
+                            I would like to receive optional news, resources, and updates from The Becoming. I understand that I can unsubscribe at any time.
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full inline-flex items-center justify-center gap-2 bg-brand-gold text-brand-navy font-bold px-6 py-4 rounded-xl hover:brightness-110 transition text-sm shadow-lg shadow-brand-gold/20 disabled:opacity-60 cursor-pointer"
+            >
+                {isSubmitting ? (
+                    <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Registering...</span>
+                    </>
+                ) : (
+                    <>
+                        <span>Join The Becoming</span>
+                        <ArrowRight className="w-4 h-4" />
+                    </>
+                )}
+            </button>
+
+            <p className="text-center text-[11px] text-brand-muted">
+                Zero cost • Free weekly sessions on Sundays at 6:00 PM WAT
+            </p>
+        </form>
+    );
+}
+
+export default function JoinPage() {
+    return (
+        <div className="max-w-4xl mx-auto px-6 py-16 space-y-10">
+            <div className="text-center space-y-3 max-w-xl mx-auto">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-gold/30 bg-brand-gold/10 text-brand-gold text-xs font-semibold">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Community Membership</span>
+                </div>
+                <h1 className="text-3xl sm:text-5xl font-black text-brand-white tracking-tight">
+                    Step Into The Room
+                </h1>
+                <p className="text-sm text-brand-muted leading-relaxed">
+                    The Becoming is a borderless growth circle convening every Sunday. Register below to receive session invites and weekly prompts.
+                </p>
+            </div>
+
+            <div className="rounded-3xl border border-white/10 bg-brand-slate/40 p-6 sm:p-10 shadow-2xl">
+                <Suspense
+                    fallback={
+                        <div className="py-12 flex justify-center text-brand-gold">
+                            <Loader2 className="w-8 h-8 animate-spin" />
+                        </div>
+                    }
+                >
+                    <JoinForm />
+                </Suspense>
+            </div>
         </div>
     );
 }

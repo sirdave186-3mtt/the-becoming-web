@@ -1,10 +1,13 @@
 import { NextResponse } from 'next/server';
+import { Resend } from 'resend';
 import { supabase } from '@/lib/supabase';
-import { resend } from '@/lib/resend';
+import { appendMemberToSheet } from '@/lib/sheets';
 
-export async function POST(request: Request) {
+export const dynamic = 'force-dynamic';
+
+export async function POST(req: Request) {
     try {
-        const { fullName, email, country, growthFocus } = await request.json();
+        const { fullName, email, country, growthFocus } = await req.json();
 
         if (!fullName || !email || !country) {
             return NextResponse.json(
@@ -13,68 +16,75 @@ export async function POST(request: Request) {
             );
         }
 
-        // 1. Insert into Supabase
+        // 1. Primary Database Insert
         const { error: dbError } = await supabase.from('becomers').insert([
             {
-                full_name: fullName.trim(),
-                email: email.trim().toLowerCase(),
-                country: country.trim(),
-                growth_focus: growthFocus || null,
+                full_name: fullName,
+                email,
+                country,
+                growth_focus: growthFocus,
             },
         ]);
 
         if (dbError) {
-            // Handle unique email constraint gracefully
             if (dbError.code === '23505') {
                 return NextResponse.json(
-                    { message: 'You are already registered! Head straight to our Telegram community.' },
-                    { status: 200 }
+                    { error: 'This email is already registered in The Becoming.' },
+                    { status: 409 }
                 );
             }
-            console.error('Supabase error:', dbError);
-            return NextResponse.json({ error: 'Failed to record details.' }, { status: 500 });
+            throw dbError;
         }
 
-        // 2. Trigger Welcome Email via Resend
-        if (process.env.RESEND_API_KEY) {
-            try {
-                await resend.emails.send({
-                    from: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
-                    to: email.trim().toLowerCase(),
-                    subject: 'Welcome to The Becoming with Dr. Immanuelson Sam',
-                    html: `
-            <div style="font-family: sans-serif; background-color: #0A1128; color: #F8FAFC; padding: 32px; border-radius: 12px; max-width: 600px; margin: auto;">
-              <h1 style="color: #F59E0B; margin-bottom: 8px;">Welcome to The Becoming</h1>
-              <p style="color: #94A3B8; font-size: 16px;">Dear ${fullName},</p>
-              <p style="color: #F8FAFC; font-size: 15px; line-height: 1.6;">
-                We are thrilled to welcome you. The Becoming is more than a community—it is a space where we choose courageous growth, practical reflection, and meaningful action.
-              </p>
-              <div style="background-color: #1E293B; border-radius: 8px; padding: 20px; margin: 24px 0; border: 1px solid rgba(255,255,255,0.1);">
-                <h3 style="color: #F59E0B; margin-top: 0;">Weekly Rhythm</h3>
-                <p style="color: #F8FAFC; margin: 4px 0; font-size: 14px;">• <strong>Monday:</strong> The Becoming Question</p>
-                <p style="color: #F8FAFC; margin: 4px 0; font-size: 14px;">• <strong>Wed/Thu:</strong> The Becoming Challenge</p>
-                <p style="color: #F8FAFC; margin: 4px 0; font-size: 14px;">• <strong>Sunday (6:00 PM):</strong> Live Mentorship Gathering</p>
+        // 2. Fire Resend Email & Google Sheets Append in Parallel
+        const resendApiKey = process.env.RESEND_API_KEY;
+        const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+
+        const emailPromise = resendApiKey
+            ? new Resend(resendApiKey).emails.send({
+                from: `The Becoming <${fromEmail}>`,
+                to: email,
+                subject: 'Welcome to The Becoming | With Dr. Immanuelson Sam',
+                html: `
+            <div style="font-family: sans-serif; max-width: 580px; margin: 0 auto; color: #0f172a; line-height: 1.6;">
+              <h2 style="color: #0b132b;">Welcome to The Becoming, ${fullName}!</h2>
+              <p>You have stepped into a borderless community of intentional people committed to personal growth, courageous leadership, and structured daily habits.</p>
+              <div style="background: #f8fafc; border-left: 4px solid #f59e0b; padding: 16px; margin: 20px 0;">
+                <strong>Weekly Live Gathering:</strong><br/>
+                Every Sunday at 6:00 PM (West Africa Time) Online<br/>
+                <strong>Your Selected Focus:</strong> ${growthFocus}
               </div>
-              <div style="text-align: center; margin: 28px 0;">
-                <a href="https://t.me/thebecomingwithsam" style="background-color: #F59E0B; color: #0A1128; text-decoration: none; padding: 12px 24px; border-radius: 9999px; font-weight: bold; display: inline-block;">
-                  Join The Telegram Community
-                </a>
-              </div>
-              <p style="color: #94A3B8; font-size: 12px; text-align: center; margin-top: 32px;">
-                "Don't just exist. Become." — Dr. Immanuelson Sam
-              </p>
+              <p>Prepare to participate actively in your own progress. Don't just live—Become.</p>
+              <p style="margin-top: 24px;">Warm regards,<br/><strong>Dr. Immanuelson Sam</strong><br/>Convener, The Becoming</p>
             </div>
           `,
-                });
-            } catch (emailError) {
-                console.error('Resend delivery error:', emailError);
-                // Non-blocking error so the user still proceeds to Telegram
-            }
-        }
+            })
+            : Promise.resolve();
 
-        return NextResponse.json({ success: true }, { status: 200 });
-    } catch (err) {
-        console.error('Onboarding handler error:', err);
-        return NextResponse.json({ error: 'Server error occurred.' }, { status: 500 });
+        const sheetPromise = appendMemberToSheet({
+            fullName,
+            email,
+            country,
+            growthFocus,
+        });
+
+        const results = await Promise.allSettled([emailPromise, sheetPromise]);
+
+        results.forEach((result, idx) => {
+            if (result.status === 'rejected') {
+                console.error(
+                    `Parallel task ${idx === 0 ? 'Resend' : 'Google Sheets'} failed:`,
+                    result.reason
+                );
+            }
+        });
+
+        return NextResponse.json({ success: true });
+    } catch (error: any) {
+        console.error('Onboarding error:', error);
+        return NextResponse.json(
+            { error: error.message || 'Internal Server Error' },
+            { status: 500 }
+        );
     }
 }
