@@ -3,8 +3,6 @@ import { Resend } from 'resend';
 import { supabase } from '@/lib/supabase';
 import { appendMemberToSheet } from '@/lib/sheets';
 
-export const dynamic = 'force-dynamic';
-
 export async function POST(req: Request) {
     try {
         const { fullName, email, country, growthFocus } = await req.json();

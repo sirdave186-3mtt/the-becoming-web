@@ -1,10 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-export const dynamic = 'force-dynamic';
-
 export async function GET(req: Request) {
-    // Optional: Verify CRON_SECRET if configured in Vercel Environment Variables
     const authHeader = req.headers.get('authorization');
     if (
         process.env.CRON_SECRET &&
@@ -14,7 +11,6 @@ export async function GET(req: Request) {
     }
 
     try {
-        // Lightweight metadata query to register database activity
         const { count, error } = await supabase
             .from('becomers')
             .select('*', { count: 'exact', head: true });
