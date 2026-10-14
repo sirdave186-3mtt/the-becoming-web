@@ -1,16 +1,16 @@
 import Link from 'next/link';
 import {
-    Globe,
     Mail,
     MapPin,
     ExternalLink,
     Calendar,
-    ShieldCheck,
-    ArrowUpRight,
     FileText
 } from 'lucide-react';
 
-export default function Footer() {
+export default async function Footer() {
+    'use cache';
+    const currentYear = new Date().getFullYear();
+
     return (
         <footer className="border-t border-white/10 bg-brand-navy/95 text-brand-muted mt-24">
             <div className="max-w-6xl mx-auto px-6 py-16 space-y-12">
@@ -179,7 +179,7 @@ export default function Footer() {
 
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
                         <p>
-                            &copy; {new Date().getFullYear()} The Becoming with Dr. Immanuelson Sam (The Becomers Community). All rights reserved.
+                            &copy; {currentYear} The Becoming with Dr. Immanuelson Sam (The Becomers Community). All rights reserved.
                         </p>
                         <div className="flex items-center gap-4">
                             <Link href="/policies#privacy" className="hover:text-brand-gold transition">
