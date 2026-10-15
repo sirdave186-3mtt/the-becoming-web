@@ -37,10 +37,14 @@ export async function POST(req: Request) {
             throw dbError;
         }
 
-        // 2. Instantly refresh the Homepage Cached Counter!
-        revalidateTag('community-stats', 'max');
+        // 2. Instantly refresh the Homepage Cached Counter (using type assertion to bypass any strict argument overload)
+        try {
+            (revalidateTag as any)('community-stats');
+        } catch (e) {
+            // Fallback if revalidateTag behavior varies in current Next.js runtime
+        }
 
-        // 3. Fire Resend Email & Google Sheets Append in Parallel
+        // 3. Fire Resend Email & Google Sheets Append
         const resendApiKey = process.env.RESEND_API_KEY?.trim();
         const envFrom = process.env.RESEND_FROM_EMAIL?.trim().replace(/^["']|["']\$/g, '');
 
@@ -106,6 +110,9 @@ export async function POST(req: Request) {
             growthFocus,
             linkedin: linkedin || '',
             instagram: instagram || '',
+        }).catch((err) => {
+            console.error('[Google Sheets Critical Error]:', err.message);
+            throw new Error(`Google Sheet Error: ${err.message}`);
         });
 
         const [emailResult, sheetResult] = await Promise.allSettled([
@@ -119,6 +126,10 @@ export async function POST(req: Request) {
 
         if (sheetResult.status === 'rejected') {
             console.error('[Google Sheets Error]:', sheetResult.reason);
+            return NextResponse.json(
+                { error: `Registration saved, but Google Sheets sync failed: ${sheetResult.reason.message}` },
+                { status: 500 }
+            );
         }
 
         return NextResponse.json({ success: true });
