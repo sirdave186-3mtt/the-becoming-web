@@ -37,11 +37,11 @@ export async function POST(req: Request) {
             throw dbError;
         }
 
-        // 2. Instantly refresh the Homepage Cached Counter (using type assertion to bypass any strict argument overload)
+        // 2. Instantly refresh the Homepage Cached Counter with the required second argument 'max'
         try {
-            (revalidateTag as any)('community-stats');
+            revalidateTag('community-stats', 'max');
         } catch (e) {
-            // Fallback if revalidateTag behavior varies in current Next.js runtime
+            // Fallback if runtime version differs
         }
 
         // 3. Fire Resend Email & Google Sheets Append
