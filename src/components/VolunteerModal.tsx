@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { X, Loader2, CheckCircle2 } from 'lucide-react';
 
 interface VolunteerModalProps {
-    isOpen: boolean;
-    onClose: () => void;
+    isOpen?: boolean;
+    onClose?: () => void;
 }
 
 const TEAM_TRACKS = [
@@ -31,7 +31,7 @@ const COUNTRIES = [
     'Other Country',
 ];
 
-export default function VolunteerModal({ isOpen, onClose }: VolunteerModalProps) {
+export default function VolunteerModal({ isOpen = true, onClose }: VolunteerModalProps) {
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
@@ -48,7 +48,7 @@ export default function VolunteerModal({ isOpen, onClose }: VolunteerModalProps)
     const [submitted, setSubmitted] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
-    if (!isOpen) return null;
+    if (isOpen === false) return null;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -78,17 +78,23 @@ export default function VolunteerModal({ isOpen, onClose }: VolunteerModalProps)
         }
     };
 
+    const handleClose = () => {
+        if (onClose) onClose();
+    };
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
             <div className="relative w-full max-w-xl bg-brand-navy border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl my-8">
 
                 {/* Close Button */}
-                <button
-                    onClick={onClose}
-                    className="absolute top-5 right-5 p-2 rounded-xl bg-white/5 hover:bg-white/10 text-brand-muted hover:text-brand-white transition"
-                >
-                    <X className="w-5 h-5" />
-                </button>
+                {onClose && (
+                    <button
+                        onClick={handleClose}
+                        className="absolute top-5 right-5 p-2 rounded-xl bg-white/5 hover:bg-white/10 text-brand-muted hover:text-brand-white transition"
+                    >
+                        <X className="w-5 h-5" />
+                    </button>
+                )}
 
                 {submitted ? (
                     <div className="text-center space-y-6 py-8">
@@ -104,7 +110,7 @@ export default function VolunteerModal({ isOpen, onClose }: VolunteerModalProps)
                         <button
                             onClick={() => {
                                 setSubmitted(false);
-                                onClose();
+                                if (onClose) onClose();
                             }}
                             className="bg-brand-gold text-brand-navy font-bold px-8 py-3 rounded-full text-xs uppercase tracking-wider"
                         >
