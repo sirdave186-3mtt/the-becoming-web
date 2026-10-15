@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidateTag } from 'next/cache';
 import { Resend } from 'resend';
 import { supabase } from '@/lib/supabase';
 import { appendMemberToSheet } from '@/lib/sheets';
@@ -14,7 +15,7 @@ export async function POST(req: Request) {
             );
         }
 
-        // 1. Primary Database Insert
+        // 1. Primary Database Insert into 'becomers' (Members table)
         const { error: dbError } = await supabase.from('becomers').insert([
             {
                 full_name: fullName,
@@ -34,13 +35,15 @@ export async function POST(req: Request) {
             throw dbError;
         }
 
-        // 2. Fire Resend Email & Google Sheets Append in Parallel
+        // 2. Instantly refresh the Homepage Cached Counter!
+        revalidateTag('community-stats', 'max');
+
+        // 3. Fire Resend Email & Google Sheets Append in Parallel
         const resendApiKey = process.env.RESEND_API_KEY;
         const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
         const isSandboxMode = fromEmail.endsWith('@resend.dev');
         const sandboxOwnerEmail = process.env.RESEND_SANDBOX_EMAIL || 'sirdave186@gmail.com';
 
-        // If still using onboarding@resend.dev, route to the sandbox owner email to prevent 403 error
         const recipientEmail = isSandboxMode ? sandboxOwnerEmail : email;
 
         const emailPromise = resendApiKey
@@ -87,8 +90,6 @@ export async function POST(req: Request) {
 
         if (emailResult.status === 'rejected') {
             console.error('[Resend Error]:', emailResult.reason);
-        } else if (emailResult.value && 'error' in emailResult.value && emailResult.value.error) {
-            console.warn('[Resend API Warning]:', emailResult.value.error.message);
         }
 
         if (sheetResult.status === 'rejected') {

@@ -1,3 +1,4 @@
+import { cacheTag, cacheLife } from 'next/cache';
 import { supabase } from '@/lib/supabase';
 
 export interface CommunityStats {
@@ -7,12 +8,16 @@ export interface CommunityStats {
 
 export async function getCachedCommunityStats(): Promise<CommunityStats> {
     'use cache';
+    cacheTag('community-stats');
+    cacheLife('hours');
+
     try {
         const { data, count, error } = await supabase
             .from('becomers')
             .select('country', { count: 'exact' });
 
         if (error || !data) {
+            console.error('[Community Stats Error]:', error?.message);
             return { totalMembers: 0, countryCounts: {} };
         }
 
