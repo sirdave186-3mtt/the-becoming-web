@@ -1,7 +1,7 @@
 import { unstable_cache } from 'next/cache';
 import { supabase } from '@/lib/supabase';
 
-export const getCommunityStats = unstable_cache(
+export const getCachedCommunityStats = unstable_cache(
     async () => {
         // Strictly count ONLY the 'becomers' table (excluding volunteers)
         const { count, error } = await supabase
