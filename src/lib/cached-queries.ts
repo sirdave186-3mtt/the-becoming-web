@@ -1,37 +1,20 @@
-import { cacheTag, cacheLife } from 'next/cache';
+import { unstable_cache } from 'next/cache';
 import { supabase } from '@/lib/supabase';
 
-export interface CommunityStats {
-    totalMembers: number;
-    countryCounts: Record<string, number>;
-}
-
-export async function getCachedCommunityStats(): Promise<CommunityStats> {
-    'use cache';
-    cacheTag('community-stats');
-    cacheLife('hours');
-
-    try {
-        const { data, count, error } = await supabase
+export const getCommunityStats = unstable_cache(
+    async () => {
+        // Strictly count ONLY the 'becomers' table (excluding volunteers)
+        const { count, error } = await supabase
             .from('becomers')
-            .select('country', { count: 'exact' });
+            .select('*', { count: 'exact', head: true });
 
-        if (error || !data) {
-            console.error('[Community Stats Error]:', error?.message);
-            return { totalMembers: 0, countryCounts: {} };
+        if (error) {
+            console.error('[Stats Error]:', error);
+            return { totalMembers: 1 }; // Fallback
         }
 
-        const countryCounts: Record<string, number> = {};
-        for (const row of data) {
-            const key = row.country?.trim() || 'Other';
-            countryCounts[key] = (countryCounts[key] || 0) + 1;
-        }
-
-        return {
-            totalMembers: count ?? data.length,
-            countryCounts,
-        };
-    } catch {
-        return { totalMembers: 0, countryCounts: {} };
-    }
-}
+        return { totalMembers: count || 0 };
+    },
+    ['community-stats'],
+    { tags: ['community-stats'], revalidate: 3600 }
+);
