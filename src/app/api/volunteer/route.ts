@@ -38,18 +38,22 @@ export async function POST(req: Request) {
         if (dbError) throw dbError;
 
         // 2. Fire Volunteer Confirmation Email & Google Sheets Sync in Parallel
-        const resendApiKey = process.env.RESEND_API_KEY;
+        const resendApiKey = process.env.RESEND_API_KEY?.trim();
+        const envFrom = process.env.RESEND_FROM_EMAIL?.trim().replace(/^["']|["']\$/g, '');
+
         const fromEmail =
-            process.env.RESEND_FROM_EMAIL || 'welcome@becomerscommunity.com';
+            envFrom && !envFrom.endsWith('@resend.dev')
+                ? envFrom
+                : 'welcome@becomerscommunity.com';
 
         const emailPromise = resendApiKey
             ? new Resend(resendApiKey).emails.send({
                 from: `The Becoming Workforce <${fromEmail}>`,
-                to: email,
+                to: [email.trim()],
                 replyTo: 'immanuelsonsam416@gmail.com',
                 subject: 'Volunteer Application Received | The Becoming Community',
                 html: `
-            <div style="font-family: sans-serif; max-width: 580px; margin: 0 auto; color: #0f172a; line-height: 1.6; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
+            <div style="font-family: sans-serif; max-width: 580px; margin: 0 auto; color: #0f172a; line-height: 1.6; padding: 24px; border: 1px solid #e2e8f0; border-radius: 12px;">
               <h2 style="color: #0b132b; margin-top: 0;">Thank you for stepping up, ${fullName}!</h2>
               <p>We have received your application to serve with <strong>The Becoming Core Workforce</strong>.</p>
               

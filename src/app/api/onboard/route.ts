@@ -38,15 +38,20 @@ export async function POST(req: Request) {
         // 2. Instantly refresh the Homepage Cached Counter!
         revalidateTag('community-stats', 'max');
 
-        // 3. Fire Resend Email (via becomerscommunity.com) & Google Sheets Append in Parallel
-        const resendApiKey = process.env.RESEND_API_KEY;
+        // 3. Fire Resend Email & Google Sheets Append in Parallel
+        const resendApiKey = process.env.RESEND_API_KEY?.trim();
+        const envFrom = process.env.RESEND_FROM_EMAIL?.trim().replace(/^["']|["']\$/g, '');
+
+        // Automatically bypass legacy 'onboarding@resend.dev' if still lingering in env vars
         const fromEmail =
-            process.env.RESEND_FROM_EMAIL || 'welcome@becomerscommunity.com';
+            envFrom && !envFrom.endsWith('@resend.dev')
+                ? envFrom
+                : 'welcome@becomerscommunity.com';
 
         const emailPromise = resendApiKey
             ? new Resend(resendApiKey).emails.send({
                 from: `The Becoming <${fromEmail}>`,
-                to: email,
+                to: [email.trim()],
                 replyTo: 'immanuelsonsam416@gmail.com',
                 subject: 'Welcome to The Becoming | With Dr. Immanuelson Sam',
                 html: `
@@ -88,7 +93,10 @@ export async function POST(req: Request) {
             </div>
           `,
             })
-            : Promise.resolve();
+            : Promise.resolve({
+                data: null,
+                error: { message: 'RESEND_API_KEY is missing on Vercel' },
+            });
 
         const sheetPromise = appendMemberToSheet({
             fullName,
@@ -102,21 +110,38 @@ export async function POST(req: Request) {
             sheetPromise,
         ]);
 
+        let emailStatus: any = { sent: false };
+
         if (emailResult.status === 'rejected') {
-            console.error('[Resend Error]:', emailResult.reason);
+            console.error('[Resend Exception]:', emailResult.reason);
+            emailStatus = { sent: false, error: String(emailResult.reason) };
         } else if (
             emailResult.value &&
             'error' in emailResult.value &&
             emailResult.value.error
         ) {
             console.error('[Resend API Error]:', emailResult.value.error);
+            emailStatus = {
+                sent: false,
+                error: emailResult.value.error,
+                fromUsed: fromEmail,
+            };
+        } else if (emailResult.value && 'data' in emailResult.value) {
+            emailStatus = {
+                sent: true,
+                id: emailResult.value.data?.id,
+                fromUsed: fromEmail,
+            };
         }
 
         if (sheetResult.status === 'rejected') {
             console.error('[Google Sheets Error]:', sheetResult.reason);
         }
 
-        return NextResponse.json({ success: true });
+        return NextResponse.json({
+            success: true,
+            emailStatus,
+        });
     } catch (error: any) {
         console.error('Onboarding error:', error);
         return NextResponse.json(
