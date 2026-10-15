@@ -55,7 +55,6 @@ export default function RootLayout({
       <body className="min-h-screen bg-brand-navy text-brand-white flex flex-col antialiased selection:bg-brand-gold selection:text-brand-navy">
         <Navbar />
         <main className="flex-1">{children}</main>
-        <VolunteerModal />
         <Footer />
       </body>
     </html>

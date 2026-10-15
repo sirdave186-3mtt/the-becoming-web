@@ -31,7 +31,7 @@ const COUNTRIES = [
     'Other Country',
 ];
 
-export default function VolunteerModal({ isOpen, onClose }: VolunteerModalProps = {}) {
+export default function VolunteerModal({ isOpen = false, onClose }: VolunteerModalProps) {
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
@@ -48,7 +48,6 @@ export default function VolunteerModal({ isOpen, onClose }: VolunteerModalProps 
     const [submitted, setSubmitted] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
-    // If isOpen is explicitly passed as false, don't render
     if (isOpen === false) return null;
 
     const handleSubmit = async (e: React.FormEvent) => {
