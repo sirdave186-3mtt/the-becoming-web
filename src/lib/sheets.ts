@@ -34,45 +34,53 @@ export interface VolunteerData {
 export async function appendMemberToSheet(data: MemberData) {
     if (!SPREADSHEET_ID) return;
 
-    const timestamp = new Date().toISOString();
-    const row = [
-        timestamp,
-        data.fullName,
-        data.email,
-        data.country,
-        data.growthFocus,
-        data.linkedin || '',
-        data.instagram || '',
-    ];
+    try {
+        const timestamp = new Date().toISOString();
+        const row = [
+            timestamp,
+            data.fullName,
+            data.email,
+            data.country,
+            data.growthFocus,
+            data.linkedin || '',
+            data.instagram || '',
+        ];
 
-    await sheets.spreadsheets.values.append({
-        spreadsheetId: SPREADSHEET_ID,
-        range: 'Members!A:G',
-        valueInputOption: 'USER_ENTERED',
-        requestBody: { values: [row] },
-    });
+        await sheets.spreadsheets.values.append({
+            spreadsheetId: SPREADSHEET_ID,
+            range: 'Members!A:G',
+            valueInputOption: 'USER_ENTERED',
+            requestBody: { values: [row] },
+        });
+    } catch (error) {
+        console.error('[Google Sheets Member Sync Error]:', error);
+    }
 }
 
 export async function appendVolunteerToSheet(data: VolunteerData) {
     if (!SPREADSHEET_ID) return;
 
-    const timestamp = new Date().toISOString();
-    const row = [
-        timestamp,
-        data.fullName,
-        data.email,
-        data.phone,
-        data.country,
-        data.teamTrack,
-        data.reasonToServe,
-        data.linkedin || '',
-        data.instagram || '',
-    ];
+    try {
+        const timestamp = new Date().toISOString();
+        const row = [
+            timestamp,
+            data.fullName,
+            data.email,
+            data.phone,
+            data.country,
+            data.teamTrack,
+            data.reasonToServe,
+            data.linkedin || '',
+            data.instagram || '',
+        ];
 
-    await sheets.spreadsheets.values.append({
-        spreadsheetId: SPREADSHEET_ID,
-        range: 'Volunteers!A:I',
-        valueInputOption: 'USER_ENTERED',
-        requestBody: { values: [row] },
-    });
+        await sheets.spreadsheets.values.append({
+            spreadsheetId: SPREADSHEET_ID,
+            range: 'Volunteers!A:I',
+            valueInputOption: 'USER_ENTERED',
+            requestBody: { values: [row] },
+        });
+    } catch (error) {
+        console.error('[Google Sheets Volunteer Sync Error]:', error);
+    }
 }
