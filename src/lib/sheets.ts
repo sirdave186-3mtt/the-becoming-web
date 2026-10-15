@@ -32,7 +32,10 @@ export interface VolunteerData {
 }
 
 export async function appendMemberToSheet(data: MemberData) {
-    if (!SPREADSHEET_ID) return;
+    if (!SPREADSHEET_ID) {
+        console.warn('[Google Sheets] SPREADSHEET_ID is missing');
+        return;
+    }
 
     try {
         const timestamp = new Date().toISOString();
@@ -48,7 +51,7 @@ export async function appendMemberToSheet(data: MemberData) {
 
         await sheets.spreadsheets.values.append({
             spreadsheetId: SPREADSHEET_ID,
-            range: 'Members!A:G',
+            range: 'Members', // Open-ended range automatically appends to the next available row
             valueInputOption: 'USER_ENTERED',
             requestBody: { values: [row] },
         });
@@ -58,7 +61,10 @@ export async function appendMemberToSheet(data: MemberData) {
 }
 
 export async function appendVolunteerToSheet(data: VolunteerData) {
-    if (!SPREADSHEET_ID) return;
+    if (!SPREADSHEET_ID) {
+        console.warn('[Google Sheets] SPREADSHEET_ID is missing');
+        return;
+    }
 
     try {
         const timestamp = new Date().toISOString();
@@ -76,7 +82,7 @@ export async function appendVolunteerToSheet(data: VolunteerData) {
 
         await sheets.spreadsheets.values.append({
             spreadsheetId: SPREADSHEET_ID,
-            range: 'Volunteers!A:I',
+            range: 'Volunteers', // Open-ended range automatically appends to the next available row
             valueInputOption: 'USER_ENTERED',
             requestBody: { values: [row] },
         });
