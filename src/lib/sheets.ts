@@ -1,15 +1,56 @@
 import { google } from 'googleapis';
 
-const auth = new google.auth.GoogleAuth({
-    credentials: {
-        client_email: process.env.GOOGLE_CLIENT_EMAIL,
-        private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    },
-    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-});
+function extractSpreadsheetId(rawIdOrUrl?: string): string | undefined {
+    if (!rawIdOrUrl) return undefined;
+    const trimmed = rawIdOrUrl.trim();
+    // If a full Google Sheets URL was provided, extract the ID between /d/ and /
+    const match = trimmed.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+    return match ? match[1] : trimmed;
+}
 
-const sheets = google.sheets({ version: 'v4', auth });
-const SPREADSHEET_ID = process.env.GOOGLE_SHEET_ID;
+function getFormattedPrivateKey(): string | undefined {
+    const rawKey = process.env.GOOGLE_PRIVATE_KEY;
+    if (!rawKey) return undefined;
+
+    let key = rawKey
+        .trim()
+        .replace(/^["']|["']\$/g, '')
+        .replace(/\\n/g, '\n');
+
+    // Fix accidental leading 'n' if '\n' lost its backslash when copied
+    if (key.startsWith('nMII')) {
+        key = key.slice(1);
+    }
+
+    // Automatically wrap in PEM headers if missing
+    if (!key.includes('-----BEGIN PRIVATE KEY-----')) {
+        key = `-----BEGIN PRIVATE KEY-----\n${key}\n-----END PRIVATE KEY-----\n`;
+    }
+
+    return key;
+}
+
+function getSheetsClient() {
+    const clientEmail = process.env.GOOGLE_CLIENT_EMAIL?.trim();
+    const privateKey = getFormattedPrivateKey();
+
+    if (!clientEmail || !privateKey) {
+        console.warn(
+            '[Google Sheets Sync] Missing GOOGLE_CLIENT_EMAIL or GOOGLE_PRIVATE_KEY.'
+        );
+        return null;
+    }
+
+    const auth = new google.auth.GoogleAuth({
+        credentials: {
+            client_email: clientEmail,
+            private_key: privateKey,
+        },
+        scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+    });
+
+    return google.sheets({ version: 'v4', auth });
+}
 
 export async function appendMemberToSheet(member: {
     fullName: string;
@@ -17,11 +58,17 @@ export async function appendMemberToSheet(member: {
     country: string;
     growthFocus: string;
 }) {
-    if (!SPREADSHEET_ID || !process.env.GOOGLE_CLIENT_EMAIL) return;
+    const spreadsheetId = extractSpreadsheetId(process.env.GOOGLE_SHEET_ID);
+    const sheets = getSheetsClient();
+
+    if (!spreadsheetId || !sheets) {
+        console.warn('[Google Sheets Sync] Skipped: Missing GOOGLE_SHEET_ID or client.');
+        return;
+    }
 
     try {
         await sheets.spreadsheets.values.append({
-            spreadsheetId: SPREADSHEET_ID,
+            spreadsheetId,
             range: 'Members!A:E',
             valueInputOption: 'USER_ENTERED',
             requestBody: {
@@ -36,8 +83,9 @@ export async function appendMemberToSheet(member: {
                 ],
             },
         });
-    } catch (err) {
-        console.error('Failed to append member to Google Sheet:', err);
+        console.log('[Google Sheets Sync] Successfully appended member to Members tab.');
+    } catch (err: any) {
+        console.error('[Google Sheets Sync] Failed to append member:', err?.message || err);
     }
 }
 
@@ -49,11 +97,17 @@ export async function appendVolunteerToSheet(volunteer: {
     teamTrack: string;
     reasonToServe: string;
 }) {
-    if (!SPREADSHEET_ID || !process.env.GOOGLE_CLIENT_EMAIL) return;
+    const spreadsheetId = extractSpreadsheetId(process.env.GOOGLE_SHEET_ID);
+    const sheets = getSheetsClient();
+
+    if (!spreadsheetId || !sheets) {
+        console.warn('[Google Sheets Sync] Skipped: Missing GOOGLE_SHEET_ID or client.');
+        return;
+    }
 
     try {
         await sheets.spreadsheets.values.append({
-            spreadsheetId: SPREADSHEET_ID,
+            spreadsheetId,
             range: 'Volunteers!A:G',
             valueInputOption: 'USER_ENTERED',
             requestBody: {
@@ -65,12 +119,13 @@ export async function appendVolunteerToSheet(volunteer: {
                         volunteer.phone,
                         volunteer.country,
                         volunteer.teamTrack,
-                        volunteer.reasonToServe,
+                        volunteer.reasonToServe || '',
                     ],
                 ],
             },
         });
-    } catch (err) {
-        console.error('Failed to append volunteer to Google Sheet:', err);
+        console.log('[Google Sheets Sync] Successfully appended volunteer to Volunteers tab.');
+    } catch (err: any) {
+        console.error('[Google Sheets Sync] Failed to append volunteer:', err?.message || err);
     }
 }
