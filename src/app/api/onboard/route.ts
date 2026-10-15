@@ -50,7 +50,7 @@ export async function POST(req: Request) {
                 replyTo: 'immanuelsonsam416@gmail.com',
                 subject: 'Welcome to The Becoming | With Dr. Immanuelson Sam',
                 html: `
-            <div style="font-family: sans-serif; max-width: 580px; margin: 0 auto; color: #0f172a; line-height: 1.6; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
+            <div style="font-family: sans-serif; max-width: 580px; margin: 0 auto; color: #0f172a; line-height: 1.6; padding: 24px; border: 1px solid #e2e8f0; border-radius: 12px;">
               <h2 style="color: #0b132b; margin-top: 0;">Welcome to The Becoming, ${fullName}!</h2>
               <p>You have stepped into a borderless community of intentional people committed to personal growth, courageous leadership, and structured daily habits.</p>
               
@@ -61,14 +61,24 @@ export async function POST(req: Request) {
                 <strong>Country Chapter:</strong> ${country}
               </div>
 
-              <p>Explore official session slides and frameworks anytime on our Resource Hub:</p>
+              <p><strong>Next Step — Join the Live Community Channel:</strong><br/>
+              All weekly Sunday session links, reflection prompts, and community updates are shared inside our official Telegram hub:</p>
+
               <p style="margin: 24px 0;">
-                <a href="https://www.becomerscommunity.com/resources" style="background: #f59e0b; color: #0b132b; font-weight: bold; text-decoration: none; padding: 12px 24px; border-radius: 999px; display: inline-block; font-size: 14px;">
+                <a href="https://t.me/thebecomingwithsam" target="_blank" rel="noopener noreferrer" style="background: #f59e0b; color: #0b132b; font-weight: bold; text-decoration: none; padding: 12px 24px; border-radius: 999px; display: inline-block; font-size: 14px; margin-right: 10px; margin-bottom: 10px;">
+                  Join the Telegram Community &rarr;
+                </a>
+                <a href="https://www.becomerscommunity.com/resources" target="_blank" rel="noopener noreferrer" style="background: #0b132b; color: #ffffff; font-weight: bold; text-decoration: none; padding: 12px 24px; border-radius: 999px; display: inline-block; font-size: 14px; margin-bottom: 10px;">
                   Access Resource Hub &rarr;
                 </a>
               </p>
 
+              <p style="font-size: 13px; color: #475569;">
+                Direct Telegram link: <a href="https://t.me/thebecomingwithsam" style="color: #d97706;">https://t.me/thebecomingwithsam</a>
+              </p>
+
               <p>Prepare to participate actively in your own progress. Don't just live—Become.</p>
+              
               <p style="margin-top: 28px; border-top: 1px solid #e2e8f0; padding-top: 16px; font-size: 14px;">
                 Warm regards,<br/>
                 <strong>Dr. Immanuelson Sam</strong><br/>
