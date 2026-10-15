@@ -189,7 +189,7 @@ export default async function HomePage() {
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
         <div className="lg:col-span-5 relative aspect-[4/5] rounded-3xl overflow-hidden border border-white/10 bg-brand-navy shadow-2xl">
           <Image
-            src="/images/immanuelson-sam.jpg"
+            src="/images/immanuelson-sam.png"
             alt="Dr. Immanuelson Sam"
             fill
             sizes="(max-width: 1024px) 100vw, 420px"

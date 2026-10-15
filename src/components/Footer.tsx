@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import {
     Mail,
     MapPin,
@@ -16,13 +17,24 @@ export default function Footer() {
                     {/* Column 1: Brand & Origin (4 cols) */}
                     <div className="lg:col-span-4 space-y-4">
                         <div>
-                            <Link href="/" className="inline-block">
-                                <span className="text-lg font-black text-brand-white tracking-wider block">
-                                    THE BECOMING
-                                </span>
-                                <span className="text-[10px] text-brand-gold font-bold tracking-widest uppercase block">
-                                    WITH DR. IMMANUELSON SAM
-                                </span>
+                            <Link href="/" className="inline-flex items-center gap-3 group">
+                                <div className="relative w-10 h-10 rounded-xl overflow-hidden border border-brand-gold/30 bg-brand-slate/40 shrink-0 flex items-center justify-center">
+                                    <Image
+                                        src="/images/logo.png"
+                                        alt="The Becoming Logo"
+                                        fill
+                                        sizes="40px"
+                                        className="object-contain p-1"
+                                    />
+                                </div>
+                                <div>
+                                    <span className="text-lg font-black text-brand-white tracking-wider block leading-none group-hover:text-brand-gold transition">
+                                        THE BECOMING
+                                    </span>
+                                    <span className="text-[10px] text-brand-gold font-bold tracking-widest uppercase block mt-1">
+                                        WITH DR. IMMANUELSON SAM
+                                    </span>
+                                </div>
                             </Link>
                         </div>
 

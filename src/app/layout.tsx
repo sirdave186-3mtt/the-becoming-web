@@ -8,6 +8,14 @@ export const metadata: Metadata = {
   title: 'The Becoming | With Dr. Immanuelson Sam',
   description:
     'A borderless growth circle, courageous leadership network, and habit incubator founded by Dr. Immanuelson Sam.',
+  icons: {
+    icon: [
+      { url: '/icon.png', type: 'image/png' },
+      { url: '/images/logo.png', type: 'image/png' },
+    ],
+    shortcut: '/images/logo.png',
+    apple: '/images/logo.png',
+  },
 };
 
 export const viewport: Viewport = {

@@ -96,7 +96,7 @@ export default function FounderPage() {
                     <div className="relative rounded-3xl bg-gradient-to-br from-brand-slate/60 to-brand-navy border border-white/10 p-5 space-y-5 shadow-2xl">
                         <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden border border-white/10 bg-brand-navy">
                             <Image
-                                src="/images/immanuelson-sam.jpg"
+                                src="/images/immanuelson-sam.png"
                                 alt="Dr. Immanuelson Sam"
                                 fill
                                 sizes="(max-width: 1024px) 100vw, 400px"
