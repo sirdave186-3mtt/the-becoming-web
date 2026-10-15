@@ -20,21 +20,37 @@ export interface VolunteerData {
     instagram?: string;
 }
 
+// Helper to correctly format the private key for Node.js crypto decoder
+function formatPrivateKey(key: string | undefined): string {
+    if (!key) return '';
+    // Unescape literal \n characters and trim whitespace or quotes
+    let cleaned = key.replace(/\\n/g, '\n').replace(/^["']|["']\$/g, '').trim();
+
+    // Ensure header and footer have correct spacing if pasted tightly
+    if (!cleaned.includes('-----BEGIN PRIVATE KEY-----')) {
+        return cleaned;
+    }
+
+    return cleaned;
+}
+
 export async function appendMemberToSheet(data: MemberData) {
     const SPREADSHEET_ID = process.env.GOOGLE_SHEET_ID?.trim();
     const CLIENT_EMAIL = process.env.GOOGLE_CLIENT_EMAIL?.trim();
-    const PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY?.trim();
+    const RAW_PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY;
 
-    if (!SPREADSHEET_ID || !CLIENT_EMAIL || !PRIVATE_KEY) {
+    if (!SPREADSHEET_ID || !CLIENT_EMAIL || !RAW_PRIVATE_KEY) {
         throw new Error(
-            `Missing Google Sheets ENV variables: ID=${!!SPREADSHEET_ID}, Email=${!!CLIENT_EMAIL}, Key=${!!PRIVATE_KEY}`
+            `Missing Google Sheets ENV variables: ID=${!!SPREADSHEET_ID}, Email=${!!CLIENT_EMAIL}, Key=${!!RAW_PRIVATE_KEY}`
         );
     }
+
+    const PRIVATE_KEY = formatPrivateKey(RAW_PRIVATE_KEY);
 
     const auth = new google.auth.GoogleAuth({
         credentials: {
             client_email: CLIENT_EMAIL,
-            private_key: PRIVATE_KEY.replace(/\\n/g, '\n'),
+            private_key: PRIVATE_KEY,
         },
         scopes: ['https://www.googleapis.com/auth/spreadsheets'],
     });
@@ -65,18 +81,20 @@ export async function appendMemberToSheet(data: MemberData) {
 export async function appendVolunteerToSheet(data: VolunteerData) {
     const SPREADSHEET_ID = process.env.GOOGLE_SHEET_ID?.trim();
     const CLIENT_EMAIL = process.env.GOOGLE_CLIENT_EMAIL?.trim();
-    const PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY?.trim();
+    const RAW_PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY;
 
-    if (!SPREADSHEET_ID || !CLIENT_EMAIL || !PRIVATE_KEY) {
+    if (!SPREADSHEET_ID || !CLIENT_EMAIL || !RAW_PRIVATE_KEY) {
         throw new Error(
-            `Missing Google Sheets ENV variables: ID=${!!SPREADSHEET_ID}, Email=${!!CLIENT_EMAIL}, Key=${!!PRIVATE_KEY}`
+            `Missing Google Sheets ENV variables: ID=${!!SPREADSHEET_ID}, Email=${!!CLIENT_EMAIL}, Key=${!!RAW_PRIVATE_KEY}`
         );
     }
+
+    const PRIVATE_KEY = formatPrivateKey(RAW_PRIVATE_KEY);
 
     const auth = new google.auth.GoogleAuth({
         credentials: {
             client_email: CLIENT_EMAIL,
-            private_key: PRIVATE_KEY.replace(/\\n/g, '\n'),
+            private_key: PRIVATE_KEY,
         },
         scopes: ['https://www.googleapis.com/auth/spreadsheets'],
     });
