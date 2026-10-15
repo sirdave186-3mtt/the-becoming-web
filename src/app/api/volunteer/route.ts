@@ -13,6 +13,8 @@ export async function POST(req: Request) {
             teamTrack,
             reasonToServe,
             agreedToGuidelines,
+            linkedin,
+            instagram,
         } = await req.json();
 
         if (!fullName || !email || !phone || !country || !teamTrack) {
@@ -32,6 +34,8 @@ export async function POST(req: Request) {
                 team_track: teamTrack,
                 reason_to_serve: reasonToServe,
                 agreed_to_guidelines: agreedToGuidelines,
+                linkedin: linkedin || null,
+                instagram: instagram || null,
             },
         ]);
 
@@ -88,6 +92,8 @@ export async function POST(req: Request) {
             country,
             teamTrack,
             reasonToServe,
+            linkedin: linkedin || '',
+            instagram: instagram || '',
         });
 
         const [emailResult, sheetResult] = await Promise.allSettled([

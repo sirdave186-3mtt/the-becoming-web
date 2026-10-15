@@ -1,4 +1,4 @@
-'import client';
+'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -33,6 +33,8 @@ export default function JoinPage() {
         email: '',
         country: 'Nigeria',
         growthFocus: GROWTH_FOCUS_AREAS[0],
+        linkedin: '',
+        instagram: '',
     });
 
     const [loading, setLoading] = useState(false);
@@ -89,7 +91,6 @@ export default function JoinPage() {
                 {/* Main Card */}
                 <div className="bg-brand-slate/30 border border-white/10 rounded-3xl p-6 sm:p-10 backdrop-blur-xl shadow-2xl">
                     {submitted ? (
-                        /* Success View (Clean & Distraction-Free) */
                         <div className="text-center space-y-6 py-6">
                             <div className="w-16 h-16 bg-brand-gold/10 text-brand-gold rounded-2xl flex items-center justify-center mx-auto border border-brand-gold/30">
                                 <CheckCircle2 className="w-8 h-8" />
@@ -122,7 +123,6 @@ export default function JoinPage() {
                             </div>
                         </div>
                     ) : (
-                        /* Registration Form */
                         <form onSubmit={handleSubmit} className="space-y-6">
                             {errorMessage && (
                                 <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs text-center font-medium">
@@ -196,10 +196,39 @@ export default function JoinPage() {
                                         ))}
                                     </select>
                                 </div>
+
+                                {/* Social Media Grid (Optional) */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                                    <div className="space-y-1.5">
+                                        <label className="block text-xs font-bold uppercase tracking-wider text-brand-white">
+                                            LinkedIn <span className="text-brand-muted text-[10px] lowercase font-normal">(optional)</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            placeholder="Profile URL or handle"
+                                            value={formData.linkedin}
+                                            onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })}
+                                            className="w-full bg-brand-navy/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-brand-white placeholder-brand-muted/50 focus:outline-none focus:border-brand-gold transition"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-1.5">
+                                        <label className="block text-xs font-bold uppercase tracking-wider text-brand-white">
+                                            Instagram <span className="text-brand-muted text-[10px] lowercase font-normal">(optional)</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            placeholder="@username"
+                                            value={formData.instagram}
+                                            onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
+                                            className="w-full bg-brand-navy/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-brand-white placeholder-brand-muted/50 focus:outline-none focus:border-brand-gold transition"
+                                        />
+                                    </div>
+                                </div>
                             </div>
 
                             {/* Privacy Notice */}
-                            <div className="flex items-center gap-2 text-[11px] text-brand-muted">
+                            <div className="flex items-center gap-2 text-[11px] text-brand-muted pt-2">
                                 <ShieldCheck className="w-4 h-4 text-brand-gold shrink-0" />
                                 <span>Your information is private and used solely for community mentorship updates.</span>
                             </div>

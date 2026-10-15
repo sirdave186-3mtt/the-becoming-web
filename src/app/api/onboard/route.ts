@@ -6,7 +6,7 @@ import { appendMemberToSheet } from '@/lib/sheets';
 
 export async function POST(req: Request) {
     try {
-        const { fullName, email, country, growthFocus } = await req.json();
+        const { fullName, email, country, growthFocus, linkedin, instagram } = await req.json();
 
         if (!fullName || !email || !country) {
             return NextResponse.json(
@@ -22,6 +22,8 @@ export async function POST(req: Request) {
                 email,
                 country,
                 growth_focus: growthFocus,
+                linkedin: linkedin || null,
+                instagram: instagram || null,
             },
         ]);
 
@@ -42,7 +44,6 @@ export async function POST(req: Request) {
         const resendApiKey = process.env.RESEND_API_KEY?.trim();
         const envFrom = process.env.RESEND_FROM_EMAIL?.trim().replace(/^["']|["']\$/g, '');
 
-        // Automatically bypass legacy 'onboarding@resend.dev' if still lingering in env vars
         const fromEmail =
             envFrom && !envFrom.endsWith('@resend.dev')
                 ? envFrom
@@ -103,6 +104,8 @@ export async function POST(req: Request) {
             email,
             country,
             growthFocus,
+            linkedin: linkedin || '',
+            instagram: instagram || '',
         });
 
         const [emailResult, sheetResult] = await Promise.allSettled([
@@ -110,38 +113,15 @@ export async function POST(req: Request) {
             sheetPromise,
         ]);
 
-        let emailStatus: any = { sent: false };
-
         if (emailResult.status === 'rejected') {
-            console.error('[Resend Exception]:', emailResult.reason);
-            emailStatus = { sent: false, error: String(emailResult.reason) };
-        } else if (
-            emailResult.value &&
-            'error' in emailResult.value &&
-            emailResult.value.error
-        ) {
-            console.error('[Resend API Error]:', emailResult.value.error);
-            emailStatus = {
-                sent: false,
-                error: emailResult.value.error,
-                fromUsed: fromEmail,
-            };
-        } else if (emailResult.value && 'data' in emailResult.value) {
-            emailStatus = {
-                sent: true,
-                id: emailResult.value.data?.id,
-                fromUsed: fromEmail,
-            };
+            console.error('[Resend Error]:', emailResult.reason);
         }
 
         if (sheetResult.status === 'rejected') {
             console.error('[Google Sheets Error]:', sheetResult.reason);
         }
 
-        return NextResponse.json({
-            success: true,
-            emailStatus,
-        });
+        return NextResponse.json({ success: true });
     } catch (error: any) {
         console.error('Onboarding error:', error);
         return NextResponse.json(
