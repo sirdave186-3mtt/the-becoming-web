@@ -9,7 +9,7 @@ interface VolunteerModalProps {
 }
 
 const TEAM_TRACKS = [
-    'Prayer & Intercession',
+    'Engagement',
     'Content & Editorial Writing',
     'Technical & Web Engineering',
     'Media, Graphics & Video Editing',
@@ -17,18 +17,60 @@ const TEAM_TRACKS = [
     'Logistics & Chapter Coordination',
 ];
 
-const COUNTRIES = [
-    'Nigeria',
-    'Ghana',
-    'Kenya',
-    'South Africa',
-    'Rwanda',
-    'Uganda',
+const AFRICAN_COUNTRIES = [
+    'Algeria',
+    'Angola',
+    'Benin',
+    'Botswana',
+    'Burkina Faso',
+    'Burundi',
     'Cameroon',
-    'United Kingdom',
-    'United States',
-    'Canada',
-    'Other Country',
+    'Cape Verde',
+    'Central African Republic',
+    'Chad',
+    'Comoros',
+    'Congo',
+    'Democratic Republic of the Congo',
+    'Djibouti',
+    'Egypt',
+    'Equatorial Guinea',
+    'Eritrea',
+    'Eswatini',
+    'Ethiopia',
+    'Gabon',
+    'Gambia',
+    'Ghana',
+    'Guinea',
+    'Guinea-Bissau',
+    'Ivory Coast',
+    'Kenya',
+    'Lesotho',
+    'Liberia',
+    'Libya',
+    'Madagascar',
+    'Malawi',
+    'Mali',
+    'Mauritania',
+    'Mauritius',
+    'Morocco',
+    'Mozambique',
+    'Namibia',
+    'Niger',
+    'Nigeria',
+    'Rwanda',
+    'Senegal',
+    'Seychelles',
+    'Sierra Leone',
+    'Somalia',
+    'South Africa',
+    'South Sudan',
+    'Sudan',
+    'Tanzania',
+    'Togo',
+    'Tunisia',
+    'Uganda',
+    'Zambia',
+    'Zimbabwe',
 ];
 
 export default function VolunteerModal({ isOpen = false, onClose }: VolunteerModalProps) {
@@ -194,7 +236,7 @@ export default function VolunteerModal({ isOpen = false, onClose }: VolunteerMod
                                         onChange={(e) => setFormData({ ...formData, country: e.target.value })}
                                         className="w-full bg-brand-navy/60 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-brand-white focus:outline-none focus:border-brand-gold transition"
                                     >
-                                        {COUNTRIES.map((c) => (
+                                        {AFRICAN_COUNTRIES.map((c) => (
                                             <option key={c} value={c} className="bg-brand-navy text-brand-white">
                                                 {c}
                                             </option>
