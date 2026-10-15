@@ -20,7 +20,7 @@ export default function Footer() {
                             <Link href="/" className="inline-flex items-center gap-3 group">
                                 <div className="relative w-10 h-10 rounded-xl overflow-hidden border border-brand-gold/30 bg-brand-slate/40 shrink-0 flex items-center justify-center">
                                     <Image
-                                        src="/images/logo.png"
+                                        src="/images/favicon.png"
                                         alt="The Becoming Logo"
                                         fill
                                         sizes="40px"

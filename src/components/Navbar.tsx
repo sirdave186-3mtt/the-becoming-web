@@ -1,140 +1,118 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Menu, X, ArrowRight } from 'lucide-react';
 
 const NAV_LINKS = [
-    { name: 'Home', href: '/' },
-    { name: 'About', href: '/about' },
-    { name: 'Sunday Sessions', href: '/sessions' },
-    { name: 'Resources', href: '/resources' },
-    { name: 'The Founder', href: '/founder' },
+    { href: '/', label: 'Home' },
+    { href: '/about', label: 'About' },
+    { href: '/sessions', label: 'Sessions' },
+    { href: '/resources', label: 'Resources' },
+    { href: '/founder', label: 'The Founder' },
 ];
 
 export default function Navbar() {
-    const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
-
-    // Close mobile drawer on route change
-    useEffect(() => {
-        setIsOpen(false);
-    }, [pathname]);
-
-    // Lock body scroll when mobile menu is open
-    useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'unset';
-        }
-        return () => {
-            document.body.style.overflow = 'unset';
-        };
-    }, [isOpen]);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     return (
-        <>
-            <header className="sticky top-0 z-50 w-full bg-brand-navy/95 backdrop-blur-md border-b border-white/10">
-                <div className="max-w-6xl mx-auto px-4 sm:px-6 h-18 sm:h-20 flex items-center justify-between">
-                    {/* Brand Logo */}
-                    <Link href="/" className="flex flex-col group">
-                        <span className="text-base sm:text-xl font-black text-brand-white tracking-wider group-hover:text-brand-gold transition">
+        <header className="sticky top-0 z-40 border-b border-white/10 bg-brand-navy/85 backdrop-blur-md">
+            <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+                {/* Brand Icon & Title Lockup */}
+                <Link href="/" className="flex items-center gap-3 group">
+                    <div className="relative w-10 h-10 rounded-xl overflow-hidden border border-brand-gold/30 bg-brand-slate/40 shrink-0 flex items-center justify-center shadow-sm">
+                        <Image
+                            src="/images/favicon.png"
+                            alt="The Becoming Logo"
+                            fill
+                            sizes="40px"
+                            className="object-contain p-0.5"
+                            priority
+                        />
+                    </div>
+                    <div>
+                        <span className="text-base sm:text-lg font-black text-brand-white tracking-wider block leading-none group-hover:text-brand-gold transition">
                             THE BECOMING
                         </span>
-                        <span className="text-[9px] sm:text-[10px] font-bold tracking-widest text-brand-gold uppercase">
+                        <span className="text-[9px] sm:text-[10px] text-brand-gold font-bold tracking-widest uppercase block mt-1">
                             WITH DR. IMMANUELSON SAM
                         </span>
+                    </div>
+                </Link>
+
+                {/* Desktop Navigation Links */}
+                <nav className="hidden md:flex items-center gap-7">
+                    {NAV_LINKS.map((link) => {
+                        const isActive = pathname === link.href;
+                        return (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                className={`text-xs font-semibold tracking-wide transition ${isActive
+                                        ? 'text-brand-gold'
+                                        : 'text-brand-muted hover:text-brand-white'
+                                    }`}
+                            >
+                                {link.label}
+                            </Link>
+                        );
+                    })}
+                </nav>
+
+                {/* Desktop CTA Button */}
+                <div className="hidden md:flex items-center">
+                    <Link
+                        href="/join"
+                        className="inline-flex items-center gap-1.5 bg-brand-gold text-brand-navy font-bold px-5 py-2.5 rounded-full text-xs hover:brightness-110 transition shadow-md shadow-brand-gold/15"
+                    >
+                        <span>Join Now</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
-
-                    {/* Desktop Navigation Links */}
-                    <nav className="hidden md:flex items-center gap-6 lg:gap-8 text-sm font-semibold text-brand-muted">
-                        {NAV_LINKS.map((link) => {
-                            const isActive = pathname === link.href;
-                            return (
-                                <Link
-                                    key={link.name}
-                                    href={link.href}
-                                    className={`relative py-1 transition-colors hover:text-brand-white ${isActive ? 'text-brand-white font-bold' : ''
-                                        }`}
-                                >
-                                    {link.name}
-                                    {isActive && (
-                                        <span className="absolute bottom-0 left-0 w-full h-[2px] bg-brand-gold rounded-full" />
-                                    )}
-                                </Link>
-                            );
-                        })}
-                    </nav>
-
-                    {/* Desktop CTA */}
-                    <div className="hidden md:flex items-center">
-                        <Link
-                            href="/join"
-                            className="inline-flex items-center justify-center bg-brand-gold text-brand-navy font-bold px-5 py-2.5 rounded-full hover:brightness-110 transition text-xs shadow-md shadow-brand-gold/20"
-                        >
-                            Join Community
-                        </Link>
-                    </div>
-
-                    {/* Mobile Header Actions */}
-                    <div className="flex md:hidden items-center gap-2">
-                        <Link
-                            href="/join"
-                            className="inline-flex items-center justify-center bg-brand-gold text-brand-navy font-bold px-3 py-1.5 rounded-full text-xs"
-                        >
-                            Join
-                        </Link>
-                        <button
-                            onClick={() => setIsOpen(!isOpen)}
-                            aria-label="Toggle navigation menu"
-                            className="p-2 rounded-xl text-brand-white hover:bg-white/10 transition"
-                        >
-                            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-                        </button>
-                    </div>
                 </div>
-            </header>
 
-            {/* Full-Screen Mobile Drawer Overlay */}
-            {isOpen && (
-                <div className="fixed inset-x-0 top-[72px] h-[calc(100dvh-72px)] z-[100] bg-brand-navy border-t border-white/10 px-6 py-8 flex flex-col justify-between overflow-y-auto">
-                    <nav className="flex flex-col gap-2">
-                        {NAV_LINKS.map((link) => {
-                            const isActive = pathname === link.href;
-                            return (
-                                <Link
-                                    key={link.name}
-                                    href={link.href}
-                                    className={`flex items-center justify-between px-4 py-4 rounded-2xl text-base font-semibold transition ${isActive
-                                            ? 'bg-brand-slate/80 text-brand-gold font-bold border border-brand-gold/40'
-                                            : 'text-brand-muted hover:text-brand-white hover:bg-white/5'
-                                        }`}
-                                >
-                                    <span>{link.name}</span>
-                                    <ArrowRight
-                                        className={`w-4 h-4 ${isActive ? 'text-brand-gold' : 'opacity-40'}`}
-                                    />
-                                </Link>
-                            );
-                        })}
-                    </nav>
+                {/* Mobile Menu Toggle Button */}
+                <button
+                    type="button"
+                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    className="md:hidden p-2 rounded-xl border border-white/10 text-brand-white hover:border-brand-gold/40 transition"
+                    aria-label="Toggle navigation menu"
+                >
+                    {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                </button>
+            </div>
 
-                    <div className="pt-6 pb-4 border-t border-white/10 space-y-4">
+            {/* Mobile Dropdown Menu */}
+            {mobileMenuOpen && (
+                <div className="md:hidden border-t border-white/10 bg-brand-navy px-6 py-5 space-y-3">
+                    {NAV_LINKS.map((link) => {
+                        const isActive = pathname === link.href;
+                        return (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                onClick={() => setMobileMenuOpen(false)}
+                                className={`block py-2 text-sm font-semibold ${isActive ? 'text-brand-gold' : 'text-brand-muted'
+                                    }`}
+                            >
+                                {link.label}
+                            </Link>
+                        );
+                    })}
+                    <div className="pt-2">
                         <Link
                             href="/join"
-                            className="w-full inline-flex items-center justify-center gap-2 bg-brand-gold text-brand-navy font-bold px-6 py-4 rounded-full text-sm shadow-lg shadow-brand-gold/20"
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="w-full inline-flex items-center justify-center gap-2 bg-brand-gold text-brand-navy font-bold px-5 py-3 rounded-full text-xs"
                         >
-                            <span>Join The Becoming</span>
-                            <ArrowRight className="w-4 h-4" />
+                            <span>Join The Community</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
                         </Link>
-                        <p className="text-center text-[11px] text-brand-muted">
-                            Weekly Sundays at 6:00 PM Online • Free &amp; Borderless
-                        </p>
                     </div>
                 </div>
             )}
-        </>
+        </header>
     );
 }
