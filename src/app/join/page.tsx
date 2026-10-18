@@ -1,64 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Loader2, CheckCircle2, ArrowRight } from 'lucide-react';
 
 const AFRICAN_COUNTRIES = [
-    'Algeria',
-    'Angola',
-    'Benin',
-    'Botswana',
-    'Burkina Faso',
-    'Burundi',
-    'Cameroon',
-    'Cape Verde',
-    'Central African Republic',
-    'Chad',
-    'Comoros',
-    'Congo',
-    'Democratic Republic of the Congo',
-    'Djibouti',
-    'Egypt',
-    'Equatorial Guinea',
-    'Eritrea',
-    'Eswatini',
-    'Ethiopia',
-    'Gabon',
-    'Gambia',
-    'Ghana',
-    'Guinea',
-    'Guinea-Bissau',
-    'Ivory Coast',
-    'Kenya',
-    'Lesotho',
-    'Liberia',
-    'Libya',
-    'Madagascar',
-    'Malawi',
-    'Mali',
-    'Mauritania',
-    'Mauritius',
-    'Morocco',
-    'Mozambique',
-    'Namibia',
-    'Niger',
-    'Nigeria',
-    'Rwanda',
-    'Sao Tome and Principe',
-    'Senegal',
-    'Seychelles',
-    'Sierra Leone',
-    'Somalia',
-    'South Africa',
-    'South Sudan',
-    'Sudan',
-    'Tanzania',
-    'Togo',
-    'Tunisia',
-    'Uganda',
-    'Zambia',
-    'Zimbabwe',
+    'Algeria', 'Angola', 'Benin', 'Botswana', 'Burkina Faso', 'Burundi',
+    'Cameroon', 'Cape Verde', 'Central African Republic', 'Chad', 'Comoros',
+    'Congo', 'Democratic Republic of the Congo', 'Djibouti', 'Egypt',
+    'Equatorial Guinea', 'Eritrea', 'Eswatini', 'Ethiopia', 'Gabon',
+    'Gambia', 'Ghana', 'Guinea', 'Guinea-Bissau', 'Ivory Coast', 'Kenya',
+    'Lesotho', 'Liberia', 'Libya', 'Madagascar', 'Malawi', 'Mali',
+    'Mauritania', 'Mauritius', 'Morocco', 'Mozambique', 'Namibia', 'Niger',
+    'Nigeria', 'Rwanda', 'Sao Tome and Principe', 'Senegal', 'Seychelles',
+    'Sierra Leone', 'Somalia', 'South Africa', 'South Sudan', 'Sudan',
+    'Tanzania', 'Togo', 'Tunisia', 'Uganda', 'Zambia', 'Zimbabwe'
 ];
 
 const GROWTH_FOCUS_OPTIONS = [
@@ -69,11 +26,35 @@ const GROWTH_FOCUS_OPTIONS = [
     'Relationships & Family',
 ];
 
-export default function JoinPage() {
+function JoinForm() {
+    const searchParams = useSearchParams();
+    const [selectedCountry, setSelectedCountry] = useState('Nigeria');
+    const [customCountry, setCustomCountry] = useState('');
+
+    useEffect(() => {
+        const paramCountry = searchParams.get('country');
+        if (!paramCountry) return;
+
+        if (paramCountry.toLowerCase() === 'other') {
+            setSelectedCountry('Other (Type manually)');
+            return;
+        }
+
+        const matchedCountry = AFRICAN_COUNTRIES.find(
+            (c) => c.toLowerCase() === paramCountry.toLowerCase()
+        );
+
+        if (matchedCountry) {
+            setSelectedCountry(matchedCountry);
+        } else {
+            setSelectedCountry('Other (Type manually)');
+            setCustomCountry(paramCountry);
+        }
+    }, [searchParams]);
+
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
-        country: 'Nigeria',
         growthFocus: GROWTH_FOCUS_OPTIONS[0],
         linkedin: '',
         instagram: '',
@@ -88,11 +69,22 @@ export default function JoinPage() {
         setLoading(true);
         setErrorMessage('');
 
+        const finalCountry = selectedCountry === 'Other (Type manually)' ? customCountry.trim() : selectedCountry;
+
+        if (!finalCountry) {
+            setErrorMessage('Please specify your country.');
+            setLoading(false);
+            return;
+        }
+
         try {
             const res = await fetch('/api/onboard', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({
+                    ...formData,
+                    country: finalCountry,
+                }),
             });
 
             const data = await res.json();
@@ -203,11 +195,11 @@ export default function JoinPage() {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div className="space-y-1">
                                     <label className="block text-xs font-bold uppercase tracking-wider text-brand-white">
-                                        African Country <span className="text-brand-gold">*</span>
+                                        Country <span className="text-brand-gold">*</span>
                                     </label>
                                     <select
-                                        value={formData.country}
-                                        onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                                        value={selectedCountry}
+                                        onChange={(e) => setSelectedCountry(e.target.value)}
                                         className="w-full bg-brand-navy/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-brand-white focus:outline-none focus:border-brand-gold transition"
                                     >
                                         {AFRICAN_COUNTRIES.map((c) => (
@@ -215,6 +207,9 @@ export default function JoinPage() {
                                                 {c}
                                             </option>
                                         ))}
+                                        <option value="Other (Type manually)" className="bg-brand-navy text-brand-gold font-semibold">
+                                            🌍 Other Continent / Country (Type manually)
+                                        </option>
                                     </select>
                                 </div>
 
@@ -235,6 +230,23 @@ export default function JoinPage() {
                                     </select>
                                 </div>
                             </div>
+
+                            {/* Manual Country Input if "Other" is selected */}
+                            {selectedCountry === 'Other (Type manually)' && (
+                                <div className="space-y-1 animate-fadeIn">
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-brand-gold">
+                                        Enter Your Country Name <span className="text-brand-gold">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        required
+                                        placeholder="e.g. United Kingdom, United States, Canada..."
+                                        value={customCountry}
+                                        onChange={(e) => setCustomCountry(e.target.value)}
+                                        className="w-full bg-brand-navy/60 border border-brand-gold/40 rounded-xl px-4 py-3 text-sm text-brand-white placeholder-brand-muted/50 focus:outline-none focus:border-brand-gold transition"
+                                    />
+                                </div>
+                            )}
 
                             {/* Social Media Grid (Optional) */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -284,5 +296,23 @@ export default function JoinPage() {
                 )}
             </div>
         </div>
+    );
+}
+
+function JoinPageFallback() {
+    return (
+        <div className="min-h-[85vh] flex items-center justify-center px-4 py-12">
+            <div className="w-full max-w-xl bg-brand-navy border border-white/10 rounded-3xl p-12 text-center flex items-center justify-center">
+                <Loader2 className="w-8 h-8 text-brand-gold animate-spin" />
+            </div>
+        </div>
+    );
+}
+
+export default function JoinPage() {
+    return (
+        <Suspense fallback={<JoinPageFallback />}>
+            <JoinForm />
+        </Suspense>
     );
 }

@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Sparkles, ExternalLink, CheckCircle2 } from 'lucide-react';
+import { Sparkles, ExternalLink, CheckCircle2, Globe, ArrowRight } from 'lucide-react';
+import { Instagram, Facebook, Linkedin } from '@/components/SocialIcons';
+
 
 const CREDENTIALS = [
     'Managing Partner at Goldenmuv Premium Consulting Limited (GMPC)',
@@ -129,6 +131,49 @@ export default function FounderPage() {
                 </div>
             </section>
 
+            <div className="space-y-3 pt-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-brand-white block">
+                    Connect with Dr. Immanuelson Sam
+                </span>
+                <div className="flex flex-wrap gap-3">
+                    <a
+                        href="https://www.instagram.com/dr_immanuelsonsam"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 bg-white/5 hover:bg-brand-gold hover:text-brand-navy border border-white/10 text-brand-white px-4 py-2.5 rounded-xl text-xs font-bold transition group"
+                    >
+                        <Instagram className="w-4 h-4 text-brand-gold group-hover:text-brand-navy transition" />
+                        <span>Instagram</span>
+                    </a>
+                    <a
+                        href="https://www.facebook.com/immanuelsonsam"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 bg-white/5 hover:bg-brand-gold hover:text-brand-navy border border-white/10 text-brand-white px-4 py-2.5 rounded-xl text-xs font-bold transition group"
+                    >
+                        <Facebook className="w-4 h-4 text-brand-gold group-hover:text-brand-navy transition" />
+                        <span>Facebook</span>
+                    </a>
+                    <a
+                        href="https://www.tiktok.com/@dr_immanuelsonsam"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 bg-white/5 hover:bg-brand-gold hover:text-brand-navy border border-white/10 text-brand-white px-4 py-2.5 rounded-xl text-xs font-bold transition group"
+                    >
+                        <Globe className="w-4 h-4 text-brand-gold group-hover:text-brand-navy transition" />
+                        <span>TikTok</span>
+                    </a>
+                    <a
+                        href="https://www.linkedin.com/in/immanuelson-sam"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 bg-white/5 hover:bg-brand-gold hover:text-brand-navy border border-white/10 text-brand-white px-4 py-2.5 rounded-xl text-xs font-bold transition group"
+                    >
+                        <Linkedin className="w-4 h-4 text-brand-gold group-hover:text-brand-navy transition" />
+                        <span>LinkedIn</span>
+                    </a>
+                </div>
+            </div>
             {/* 2. Credentials & Battle-Tested Experience */}
             <section className="rounded-3xl border border-white/10 bg-brand-slate/40 p-8 sm:p-12 space-y-8">
                 <div className="max-w-2xl mx-auto text-center space-y-2">
