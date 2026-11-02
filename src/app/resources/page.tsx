@@ -56,7 +56,7 @@ const DECKS: SlideDeck[] = [
         theme: 'The Courage to Become',
         description:
             'A compelling session on breaking past fear, confronting resistance, and taking bold ownership of your personal evolution.',
-        pdfPath: '/resources/the-courage-to-become.pdf',
+        pdfPath: '/resources/becoming-requires-courage.pdf',
         frameworkSteps: ['1. Recognize', '2. Identify', '3. Understand', '4. Commit'],
         becomingQuestion:
             'What Would You Do If Fear Weren’t Deciding?',
