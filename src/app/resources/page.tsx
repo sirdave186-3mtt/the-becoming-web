@@ -49,6 +49,18 @@ const DECKS: SlideDeck[] = [
         becomingQuestion:
             'What part of who you are today was shaped by a belief, environment, or experience that you have never stopped to question?',
     },
+    {
+        title: 'Becoming Requires Courage',
+        subtitle: 'The Courage to Become',
+        session: 'Sunday Session 04',
+        theme: 'The Courage to Become',
+        description:
+            'A compelling session on breaking past fear, confronting resistance, and taking bold ownership of your personal evolution.',
+        pdfPath: '/resources/the-courage-to-become.pdf',
+        frameworkSteps: ['1. Recognize', '2. Identify', '3. Understand', '4. Commit'],
+        becomingQuestion:
+            'What Would You Do If Fear Weren’t Deciding?',
+    },
 ];
 
 export default function ResourcesPage() {
