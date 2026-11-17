@@ -52,7 +52,7 @@ export default function FounderPage() {
 
                     <h1 className="text-4xl sm:text-6xl font-black text-brand-white tracking-tight leading-[1.08]">
                         Dr. Immanuelson <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-amber-200 to-brand-gold">
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-orange-200 to-brand-gold">
                             Sam.
                         </span>
                     </h1>
@@ -76,7 +76,7 @@ export default function FounderPage() {
 
                     <div className="flex flex-wrap gap-3 pt-2">
                         <a
-                            href="https://www.goldenmuv.com"
+                            href="https://www.goldenmuv.com" //"https://sam-portfolio-three-navy.vercel.app"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-2 bg-brand-gold text-brand-navy font-bold px-7 py-3 rounded-full hover:brightness-110 transition text-xs shadow-md shadow-brand-gold/15"
@@ -295,7 +295,7 @@ export default function FounderPage() {
                         rel="noopener noreferrer"
                         className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-brand-gold text-brand-navy font-bold px-8 py-3.5 rounded-full hover:brightness-110 transition text-xs shadow-lg shadow-brand-gold/20"
                     >
-                        <span>Visit www.goldenmuv.com</span>
+                        <span>Visit Goldenmuv Consulting</span>
                         <ExternalLink className="w-4 h-4" />
                     </a>
                     <Link

@@ -83,7 +83,7 @@ export default function AboutPage() {
 
                 <h1 className="text-4xl sm:text-6xl font-black text-brand-white tracking-tight leading-[1.1]">
                     The Art of <br />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-amber-200 to-brand-gold">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-orange-200 to-brand-gold">
                         Intentional Becoming.
                     </span>
                 </h1>

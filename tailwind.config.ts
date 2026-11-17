@@ -10,14 +10,11 @@ const config: Config = {
         extend: {
             colors: {
                 brand: {
-                    navy: "#0A1128",       // Deep Oxford Navy
-                    dark: "#0F172A",       // Slate base
-                    slate: "#1E293B",      // Card / surface background
-                    gold: "#F59E0B",       // Warm Amber Gold accent
-                    goldLight: "#FDE68A",
-                    muted: "#94A3B8",      // Cool Slate Grey text
-                    white: "#F8FAFC",      // Off-White typography
-                    emerald: "#10B981",    // Live / success indicator
+                    navy: '#14110F',
+                    slate: '#1F1A17',
+                    gold: '#E86A33',
+                    white: '#F5EFE6',
+                    muted: '#A89F96',
                 },
             },
         },

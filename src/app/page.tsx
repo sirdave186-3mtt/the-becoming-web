@@ -60,7 +60,7 @@ export default async function HomePage() {
 
         <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-brand-white tracking-tight leading-[1.08]">
           Don’t Just Exist. <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-amber-200 to-brand-gold">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-orange-200 to-brand-gold">
             Become.
           </span>
         </h1>

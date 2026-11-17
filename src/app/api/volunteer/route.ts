@@ -57,11 +57,11 @@ export async function POST(req: Request) {
                 replyTo: 'immanuelsonsam416@gmail.com',
                 subject: 'Volunteer Application Received | The Becoming Community',
                 html: `
-            <div style="font-family: sans-serif; max-width: 580px; margin: 0 auto; color: #0f172a; line-height: 1.6; padding: 24px; border: 1px solid #e2e8f0; border-radius: 12px;">
-              <h2 style="color: #0b132b; margin-top: 0;">Thank you for stepping up, ${fullName}!</h2>
+            <div style="font-family: sans-serif; max-width: 580px; margin: 0 auto; color: #1F1A17; line-height: 1.6; padding: 24px; border: 1px solid #e2e8f0; border-radius: 12px;">
+              <h2 style="color: #14110F; margin-top: 0;">Thank you for stepping up, ${fullName}!</h2>
               <p>We have received your application to serve with <strong>The Becoming Core Workforce</strong>.</p>
               
-              <div style="background: #f8fafc; border-left: 4px solid #f59e0b; padding: 16px; margin: 20px 0; border-radius: 4px;">
+              <div style="background: #F5EFE6; border-left: 4px solid #E86A33; padding: 16px; margin: 20px 0; border-radius: 4px;">
                 <strong>Selected Service Track:</strong> ${teamTrack}<br/>
                 <strong>Country:</strong> ${country}<br/>
                 <strong>Phone / WhatsApp:</strong> ${phone}
@@ -69,7 +69,7 @@ export async function POST(req: Request) {
 
               <p>Our coordination team will review your submission and reach out to you via WhatsApp or email with onboarding steps.</p>
               <p style="margin: 20px 0;">
-                <a href="https://www.becomerscommunity.com/resources/volunteer-guidelines.pdf" style="background: #0b132b; color: #ffffff; font-weight: bold; text-decoration: none; padding: 10px 20px; border-radius: 999px; display: inline-block; font-size: 13px;">
+                <a href="https://www.becomerscommunity.com/resources/volunteer-guidelines.pdf" style="background: #14110F; color: #F5EFE6; font-weight: bold; text-decoration: none; padding: 10px 20px; border-radius: 999px; display: inline-block; font-size: 13px;">
                   Review Volunteer Guidelines (PDF) &rarr;
                 </a>
               </p>
@@ -77,8 +77,8 @@ export async function POST(req: Request) {
               <p style="margin-top: 28px; border-top: 1px solid #e2e8f0; padding-top: 16px; font-size: 14px;">
                 With gratitude,<br/>
                 <strong>Dr. Immanuelson Sam</strong><br/>
-                <span style="color: #64748b; font-size: 12px;">Global Speaker | African Mentor | Consultant</span><br/>
-                <a href="https://www.becomerscommunity.com" style="color: #d97706; text-decoration: none; font-size: 12px;">www.becomerscommunity.com</a>
+                <span style="color: #A89F96; font-size: 12px;">Global Speaker | African Mentor | Consultant</span><br/>
+                <a href="https://www.becomerscommunity.com" style="color: #E86A33; text-decoration: none; font-size: 12px;">www.becomerscommunity.com</a>
               </p>
             </div>
           `,

@@ -62,7 +62,7 @@ export default function SessionsPage() {
 
                 <h1 className="text-4xl sm:text-6xl font-black text-brand-white tracking-tight leading-[1.1]">
                     The Sunday <br />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-amber-200 to-brand-gold">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-orange-200 to-brand-gold">
                         Becoming Session.
                     </span>
                 </h1>
@@ -78,8 +78,8 @@ export default function SessionsPage() {
                             <span className="text-brand-gold flex items-center gap-1.5">
                                 <Video className="w-4 h-4" /> Google Meet Platform
                             </span>
-                            <span className="text-brand-emerald flex items-center gap-1">
-                                <span className="w-2 h-2 rounded-full bg-brand-emerald animate-pulse" /> Free & Open Access
+                            <span className="text-emerald-400 flex items-center gap-1">
+                                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> Free & Open Access
                             </span>
                         </div>
 

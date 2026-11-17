@@ -71,7 +71,7 @@ export default function GlobalFootprint({ currentCount = 84 }: { currentCount?: 
                             </div>
                             <div className="w-full bg-brand-navy h-2.5 rounded-full overflow-hidden border border-white/5">
                                 <div
-                                    className="bg-gradient-to-r from-amber-500 to-brand-gold h-full rounded-full transition-all duration-700 ease-out"
+                                    className="bg-gradient-to-r from-brand-gold/70 to-brand-gold h-full rounded-full transition-all duration-700 ease-out"
                                     style={{ width: `${Math.max(percentage, 5)}%` }}
                                 />
                             </div>

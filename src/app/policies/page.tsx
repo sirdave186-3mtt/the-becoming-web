@@ -76,7 +76,7 @@ export default function PoliciesPage() {
                             <li><strong className="text-brand-white">Communications:</strong> Information provided when you contact us or respond to an invitation.</li>
                             <li><strong className="text-brand-white">Technical information:</strong> Standard browser/device metadata and security logs generated when visiting our site.</li>
                         </ul>
-                        <p className="text-xs italic text-amber-200/90 pt-1">
+                        <p className="text-xs italic text-brand-gold/90 pt-1">
                             Please do not submit sensitive personal information—such as health details, government identity documents, or financial account details.
                         </p>
                     </div>

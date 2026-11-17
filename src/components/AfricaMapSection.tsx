@@ -22,7 +22,7 @@ const AFRICAN_NATIONS: CountryItem[] = [
     { name: 'Rwanda', code: 'RW', flagUrl: 'https://flagcdn.com/w80/rw.png' },
     { name: 'South Africa', code: 'ZA', flagUrl: 'https://flagcdn.com/w80/za.png' },
     { name: 'Liberia', code: 'LR', flagUrl: 'https://flagcdn.com/w80/lr.png' },
-    { name: 'Uganda', code: 'UG', flagUrl: 'https://flagcdn.com/w80/ug.png' },
+    { name: 'Sierra Leone', code: 'SL', flagUrl: 'https://flagcdn.com/w80/sl.png' },
     { name: 'Zambia', code: 'ZM', flagUrl: 'https://flagcdn.com/w80/zm.png' },
     { name: 'Zimbabwe', code: 'ZW', flagUrl: 'https://flagcdn.com/w80/zw.png' },
 ];
@@ -83,9 +83,9 @@ export default function AfricaMapSection({
                             </div>
 
                             {/* Sub-hubs pins */}
-                            <div className="absolute top-[40%] left-[28%] w-2 h-2 rounded-full bg-amber-200/80" title="Ghana" />
-                            <div className="absolute top-[48%] left-[68%] w-2 h-2 rounded-full bg-amber-200/80" title="Kenya & Rwanda" />
-                            <div className="absolute top-[78%] left-[54%] w-2 h-2 rounded-full bg-amber-200/80" title="South Africa" />
+                            <div className="absolute top-[40%] left-[28%] w-2 h-2 rounded-full bg-brand-gold/80" title="Ghana" />
+                            <div className="absolute top-[48%] left-[68%] w-2 h-2 rounded-full bg-brand-gold/80" title="Kenya & Rwanda" />
+                            <div className="absolute top-[78%] left-[54%] w-2 h-2 rounded-full bg-brand-gold/80" title="South Africa" />
                         </div>
                     </div>
 
@@ -144,8 +144,8 @@ export default function AfricaMapSection({
                                 key={nation.name}
                                 href={`/join?country=${encodeURIComponent(nation.name)}`}
                                 className={`group p-4 rounded-2xl border transition-all duration-300 flex flex-col items-center text-center gap-3 hover:-translate-y-1 hover:shadow-xl ${nation.isOrigin
-                                        ? 'bg-brand-slate/60 border-brand-gold/60 shadow-brand-gold/10'
-                                        : 'bg-brand-slate/30 border-white/10 hover:border-brand-gold/50 hover:bg-brand-slate/50'
+                                    ? 'bg-brand-slate/60 border-brand-gold/60 shadow-brand-gold/10'
+                                    : 'bg-brand-slate/30 border-white/10 hover:border-brand-gold/50 hover:bg-brand-slate/50'
                                     }`}
                             >
                                 <div className="relative w-12 h-8 rounded shadow-md overflow-hidden border border-white/10 group-hover:scale-105 transition-transform">
